@@ -1,0 +1,567 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dotmim.Sync.Web.Server</name>
+    </assembly>
+    <members>
+        <member name="T:Dotmim.Sync.HttpGettingRequestArgs">
+            <summary>
+            Http getting request event args.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpGettingRequestArgs.#ctor(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.SyncContext,Dotmim.Sync.Web.Server.SessionCache,System.Object,System.Type,Dotmim.Sync.Web.Client.HttpStep)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpGettingRequestArgs"/>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingRequestArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingRequestArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingRequestArgs.HttpContext">
+            <summary>
+            Gets the http context.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingRequestArgs.SessionCache">
+            <summary>
+            Gets the session cache.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingRequestArgs.Data">
+            <summary>
+            Gets the data.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingRequestArgs.RequestType">
+            <summary>
+            Gets the request type that is being processed.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingRequestArgs.HttpStep">
+            <summary>
+            Gets the http step.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpSendingResponseArgs">
+            <summary>
+            Http sending response event args.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpSendingResponseArgs.#ctor(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.SyncContext,Dotmim.Sync.Web.Server.SessionCache,System.Object,System.Type,Dotmim.Sync.Web.Client.HttpStep)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpSendingResponseArgs"/>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingResponseArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingResponseArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingResponseArgs.HttpContext">
+            <summary>
+            Gets the http context.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingResponseArgs.SessionCache">
+            <summary>
+            Gets the session cache.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingResponseArgs.Data">
+            <summary>
+            Gets the data.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingResponseArgs.ResponseType">
+            <summary>
+            Gets the response type abvout to be sent back to the client.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingResponseArgs.HttpStep">
+            <summary>
+            Gets the http step.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpServerSyncEventsId">
+            <summary>
+            Http server sync events id.
+            </summary>
+            <summary>
+            Http sending response event args.
+            </summary>
+            <summary>
+            Http server sync events id.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpServerSyncEventsId.HttpGettingRequest">
+            <summary>
+            Gets the event id for HttpGettingRequestArgs.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpServerSyncEventsId.HttpSendingResponse">
+            <summary>
+            Gets the event id for HttpSendingResponseArgs.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpServerSyncEventsId.HttpSendingChanges">
+            <summary>
+            Gets the event id for HttpSendingResponseArgs.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpServerSyncEventsId.HttpGettingChanges">
+            <summary>
+            Gets the event id for HttpGettingRequestArgs.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpServerInterceptorsExtensions">
+            <summary>
+            Partial Interceptors extensions.
+            </summary>
+            <summary>
+            Partial Interceptors extensions.
+            </summary>
+            <summary>
+            Http server interceptors extensions.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpServerInterceptorsExtensions.OnHttpSendingResponse(Dotmim.Sync.Web.Server.WebServerAgent,System.Action{Dotmim.Sync.HttpSendingResponseArgs})">
+            <summary>
+            Intercept the provider when an http response message is sent back to the client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpServerInterceptorsExtensions.OnHttpSendingResponse(Dotmim.Sync.Web.Server.WebServerAgent,System.Func{Dotmim.Sync.HttpSendingResponseArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http response message is sent back to the client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpServerInterceptorsExtensions.OnHttpGettingRequest(Dotmim.Sync.Web.Server.WebServerAgent,System.Action{Dotmim.Sync.HttpGettingRequestArgs})">
+            <summary>
+            Intercept the provider when an http message request from the client arrived to the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpServerInterceptorsExtensions.OnHttpGettingRequest(Dotmim.Sync.Web.Server.WebServerAgent,System.Func{Dotmim.Sync.HttpGettingRequestArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http message request from the client arrived to the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpServerInterceptorsExtensions.OnHttpSendingChanges(Dotmim.Sync.Web.Server.WebServerAgent,System.Action{Dotmim.Sync.HttpSendingServerChangesArgs})">
+            <summary>
+            Intercept the provider when an http message is sent.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpServerInterceptorsExtensions.OnHttpSendingChanges(Dotmim.Sync.Web.Server.WebServerAgent,System.Func{Dotmim.Sync.HttpSendingServerChangesArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http message is sent.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpServerInterceptorsExtensions.OnHttpGettingChanges(Dotmim.Sync.Web.Server.WebServerAgent,System.Action{Dotmim.Sync.HttpGettingClientChangesArgs})">
+            <summary>
+            Intercept the provider when an http message is downloaded from remote side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpServerInterceptorsExtensions.OnHttpGettingChanges(Dotmim.Sync.Web.Server.WebServerAgent,System.Func{Dotmim.Sync.HttpGettingClientChangesArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http message is downloaded from remote side.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpGettingClientChangesArgs">
+            <summary>
+            Http getting request event args.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpGettingClientChangesArgs.#ctor(Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest,System.String,Dotmim.Sync.Web.Server.SessionCache)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpGettingClientChangesArgs"/>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingClientChangesArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingClientChangesArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingClientChangesArgs.Request">
+            <summary>
+            Gets the intercepted request.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingClientChangesArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingClientChangesArgs.SessionCache">
+            <summary>
+            Gets the session cache.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingClientChangesArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingClientChangesArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.HttpSendingServerChangesArgs">
+            <summary>
+            Http sending changes event args.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpSendingServerChangesArgs.#ctor(Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse,System.String,Dotmim.Sync.Web.Server.SessionCache,System.Boolean)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpSendingServerChangesArgs"/>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingServerChangesArgs.Response">
+            <summary>
+            Gets the intercepted response.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingServerChangesArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingServerChangesArgs.SessionCache">
+            <summary>
+            Gets the session cache.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingServerChangesArgs.IsSnapshot">
+            <summary>
+            Gets a value indicating whether the changes are a snapshot.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingServerChangesArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingServerChangesArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingServerChangesArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingServerChangesArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.Web.Server.SessionCache">
+            <summary>
+            Cache object used by each client to cache sync process batches.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.SessionCache.RemoteClientTimestamp">
+            <summary>
+            Gets or Sets the remote client timestamp.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.SessionCache.ServerBatchInfo">
+            <summary>
+            Gets or Sets the server batch info.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.SessionCache.ClientBatchInfo">
+            <summary>
+            Gets or Sets the client batch info.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.SessionCache.ServerChangesSelected">
+            <summary>
+            Gets or Sets the server changes selected.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.SessionCache.ClientChangesApplied">
+            <summary>
+            Gets or Sets the client changes applied.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.SessionCache.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.Web.Server.SessionExtensions">
+            <summary>
+            Session extensions.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.SessionExtensions.Get``1(Microsoft.AspNetCore.Http.ISession,System.String)">
+            <summary>
+            Get a value from the session.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.SessionExtensions.Set``1(Microsoft.AspNetCore.Http.ISession,System.String,``0)">
+            <summary>
+            Set a value in the session.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Server.WebServerAgent">
+            <summary>
+            Web server agent.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.#ctor(Dotmim.Sync.CoreProvider,Dotmim.Sync.SyncSetup,Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Server.WebServerAgent"/>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.#ctor(Dotmim.Sync.CoreProvider,System.String[],Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Server.WebServerAgent"/>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Server.WebServerAgent.clientConverter">
+            <summary>
+            Client Converter.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.WebServerAgent.Setup">
+            <summary>
+            Gets or Sets the setup used in this webServerAgent.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.WebServerAgent.Options">
+            <summary>
+            Gets the options used in this webServerAgent.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.WebServerAgent.Provider">
+            <summary>
+            Gets ts the options used in this webServerAgent.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.WebServerAgent.WebServerOptions">
+            <summary>
+            Gets ts Web server options parameters.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.WebServerAgent.Identifier">
+            <summary>
+            Gets ts an identifier used to identify your webServerAgent.
+            Can be really usefull in multi sync scenarios.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.WebServerAgent.ScopeName">
+            <summary>
+            Gets ts a scope name used when multiple SyncSetup in one server.
+            Can be really usefull in multi sync scenarios.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.WebServerAgent.RemoteOrchestrator">
+            <summary>
+            Gets the RemoteOrchestrator used in this webServerAgent.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetClientScopeId(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get Scope Name sent by the client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetScopeName(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get Scope Name sent by the client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetVersion(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get the DMS Version used by the client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetClientSessionId(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get the current client session id.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetCurrentStep(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get the current Step.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.TryGetHeaderValue(Microsoft.AspNetCore.Http.IHeaderDictionary,System.String,System.String@)">
+            <summary>
+            Get an header value.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.WriteHelloAsync(Microsoft.AspNetCore.Http.HttpContext,System.Collections.Generic.IEnumerable{Dotmim.Sync.Web.Server.WebServerAgent},System.Threading.CancellationToken)">
+            <summary>
+            Write server debug information.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.HandleRequestAsync(Microsoft.AspNetCore.Http.HttpContext,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Call this method to handle requests on the server, sent by the client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.HandleRequestAsync(Microsoft.AspNetCore.Http.HttpContext,System.Action{Dotmim.Sync.RemoteOrchestrator},System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Call this method to handle requests on the server, sent by the client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.WriteExceptionAsync(Microsoft.AspNetCore.Http.HttpRequest,Microsoft.AspNetCore.Http.HttpResponse,System.Exception)">
+            <summary>
+            Write exception to output message.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.WriteHelloAsync(Microsoft.AspNetCore.Http.HttpContext,System.Threading.CancellationToken)">
+            <summary>
+            Write server debug information.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.EnsureCompression(Microsoft.AspNetCore.Http.HttpRequest,Microsoft.AspNetCore.Http.HttpResponse,System.Byte[])">
+            <summary>
+            Ensure we have a Compression setting or not.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetClientSerializer(System.String)">
+            <summary>
+            Returns the serializer used by the client, that should be used on the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetClientConverter(System.String)">
+            <summary>
+            Returns the converter used by the client, that should be used on the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.EnsureScopesAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageEnsureScopesRequest,Dotmim.Sync.Web.Server.SessionCache,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Ensure we have the latest version of the server side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetEstimatedChangesCountAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Get estimated changes count only.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetRemoteClientTimestampAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampRequest,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Get remote client timestamp.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetOperationAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageOperationRequest,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Get overriden operation to send to the client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.EndSessionAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            End the session.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetSnapshotSummaryAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest,Dotmim.Sync.Web.Server.SessionCache,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Gets the snapshot summary.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetSnapshotAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest,Dotmim.Sync.Web.Server.SessionCache,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Gets the snapshot.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.ApplyThenGetChangesAsync2(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest,Dotmim.Sync.Web.Server.SessionCache,System.Int32,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Apply changes to the server and then get the changes to send back to the client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetMoreChangesAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageGetMoreChangesRequest,Dotmim.Sync.Web.Server.SessionCache,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Get batch changes.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.GetChangesResponseAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.SyncContext,System.Int64,Dotmim.Sync.Batch.BatchInfo,Dotmim.Sync.DatabaseChangesApplied,Dotmim.Sync.DatabaseChangesSelected,System.Int32)">
+            <summary>
+            Get changes from server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerAgent.SendEndDownloadChangesAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Client.HttpMessageGetMoreChangesRequest,Dotmim.Sync.Web.Server.SessionCache,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Send an end download changes message.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Server.WebServerOptions">
+            <summary>
+            Specifies options for the Web Server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.WebServerOptions.Converters">
+            <summary>
+            Gets converters used by different clients.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Server.WebServerOptions.SerializerFactories">
+            <summary>
+            Gets the serializer factories.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Server.WebServerOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dotmim.Sync.Web.Server.WebServerOptions"/> class.
+            Create a new instance of options with default values.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.DependencyInjection">
+            <summary>
+            Dependency injection extensions for the Dotmim.Sync.Web.Server library.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.AddSyncServer(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.String,Dotmim.Sync.SyncSetup,Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String,System.String)">
+            <summary>
+            Add the server provider (inherited from CoreProvider) and register in the DI a WebServerAgent.
+            Use the WebServerAgent in your controller, by inject it.
+            </summary>
+            <param name="serviceCollection">services collections.</param>
+            <param name="providerType">Provider inherited from CoreProvider (SqlSyncProvider, MySqlSyncProvider, OracleSyncProvider) Should have [CanBeServerProvider=true]. </param>
+            <param name="connectionString">Provider connection string.</param>
+            <param name="setup">Configuration server side. Adding at least tables to be synchronized.</param>
+            <param name="options">Options, not shared with client, but only applied locally. Can be null.</param>
+            <param name="webServerOptions">Specific web server options.</param>
+            <param name="scopeName">Scope name.</param>
+            <param name="identifier">Can be use to differentiate configuration where you are using the same provider in a multiple databases scenario.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.AddSyncServer``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,Dotmim.Sync.SyncSetup,Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String)">
+            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.AddSyncServer(Microsoft.Extensions.DependencyInjection.IServiceCollection,Dotmim.Sync.CoreProvider,System.String[],Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String,System.String)" />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.AddSyncServer``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.String[],Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String)">
+            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.AddSyncServer(Microsoft.Extensions.DependencyInjection.IServiceCollection,Dotmim.Sync.CoreProvider,System.String[],Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String,System.String)" />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.AddSyncServer(Microsoft.Extensions.DependencyInjection.IServiceCollection,Dotmim.Sync.CoreProvider,Dotmim.Sync.SyncSetup,Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String,System.String)">
+            <summary>
+            Add the server provider (inherited from CoreProvider) and register in the DI as a new WebServerAgent.
+            In Your controller, inject a WebServerAgent to get your agent.
+            </summary>
+            <param name="serviceCollection">services collections.</param>
+            <param name="provider">Provider inherited from CoreProvider (SqlSyncProvider, MySqlSyncProvider, OracleSyncProvider) Should have [CanBeServerProvider=true]. </param>
+            <param name="setup">Configuration server side. Adding at least tables to be synchronized.</param>
+            <param name="options">Options, not shared with client, but only applied locally. Can be null.</param>
+            <param name="webServerOptions">Specific web server options.</param>
+            <param name="scopeName">scope name.</param>
+            <param name="identifier">Can be use to differentiate configuration where you are using the same provider in a multiple databases scenario.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.AddSyncServer(Microsoft.Extensions.DependencyInjection.IServiceCollection,Dotmim.Sync.CoreProvider,System.String[],Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String,System.String)">
+            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.AddSyncServer(Microsoft.Extensions.DependencyInjection.IServiceCollection,Dotmim.Sync.CoreProvider,Dotmim.Sync.SyncSetup,Dotmim.Sync.SyncOptions,Dotmim.Sync.Web.Server.WebServerOptions,System.String,System.String)" />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.WriteHelloAsync(Microsoft.AspNetCore.Http.HttpContext,Dotmim.Sync.Web.Server.WebServerAgent,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Dotmim.Sync.Web.Server.WebServerAgent.WriteHelloAsync(Microsoft.AspNetCore.Http.HttpContext,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.WriteHelloAsync(Microsoft.AspNetCore.Http.HttpContext,System.Collections.Generic.IEnumerable{Dotmim.Sync.Web.Server.WebServerAgent},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Dotmim.Sync.Web.Server.WebServerAgent.WriteHelloAsync(Microsoft.AspNetCore.Http.HttpContext,System.Collections.Generic.IEnumerable{Dotmim.Sync.Web.Server.WebServerAgent},System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.GetScopeName(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get Scope Name sent by the client.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.GetVersion(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get the DMS version used by the Client.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.GetClientScopeId(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get Scope Name sent by the client.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.GetClientSessionId(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get the current client session id.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.GetCurrentStep(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get the current Step.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.GetIdentifier(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Get the identifier that can be used in multi sync providers.
+            </summary>
+        </member>
+    </members>
+</doc>

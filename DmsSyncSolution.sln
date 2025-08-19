@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36310.24
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncServer", "SyncServer\SyncServer.csproj", "{C4A877C4-D266-4AC8-872B-8EF7FBABD3AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncClient", "SyncClient.Console\SyncClient.csproj", "{14180795-FCBA-498A-AF5A-E01DE139F915}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4A877C4-D266-4AC8-872B-8EF7FBABD3AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4A877C4-D266-4AC8-872B-8EF7FBABD3AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4A877C4-D266-4AC8-872B-8EF7FBABD3AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4A877C4-D266-4AC8-872B-8EF7FBABD3AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14180795-FCBA-498A-AF5A-E01DE139F915}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14180795-FCBA-498A-AF5A-E01DE139F915}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14180795-FCBA-498A-AF5A-E01DE139F915}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14180795-FCBA-498A-AF5A-E01DE139F915}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C094C17A-E5A4-4DD5-AAAF-CD1493965127}
+	EndGlobalSection
+EndGlobal

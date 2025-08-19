@@ -1,0 +1,120 @@
+# Docker SQL Server Sync Test Environment
+
+This project provides a ready-to-use Docker Compose environment with four SQL Server Express containers (one central and three clients) and an initialization container that restores the `AdventureWorks` database from a backup.
+
+---
+
+## Prerequisites
+
+- [Docker](https://www.docker.com/products/docker-desktop) installed on your system
+- [Docker Compose](https://docs.docker.com/compose/) (usually included with Docker Desktop)
+- The following files in the `./init` directory:
+  - `AdventureWorks.bak` (your database backup)
+  - `restore-db-AdventureWorks.sql` (restore script with correct logical file names)
+  - `init.sh` (initialization script)
+
+---
+
+## How to Run
+
+1. **Clone or copy this repository to your machine.**
+
+2. **Place your backup and scripts in the `init` folder:**
+   - `init/AdventureWorks.bak`
+   - `init/restore-db-AdventureWorks.sql`
+   - `init/init.sh`
+
+3. **(Optional) Make sure `init.sh` is executable:**
+   ```sh
+   chmod +x init/init.sh
+   ```
+
+4. **Start the environment:**
+   ```sh
+   docker compose up
+   ```
+   Or to run in detached mode:
+   ```sh
+   docker compose up -d
+   ```
+
+5. **Wait for the logs to show:**
+   ```
+   All databases restored successfully.
+   ```
+
+---
+
+## What Happens
+
+- Four SQL Server Express containers are started:
+  - `central-db` (exposed on port 14330)
+  - `client1-db` (port 14331)
+  - `client2-db` (port 14332)
+  - `client3-db` (port 14333)
+- The `init-all` container waits for all databases to be ready, then restores the `AdventureWorks` database on each instance using the provided `.bak` and `.sql` files.
+
+---
+
+## How to Check the Restore
+
+You can verify the database presence in each container:
+
+```sh
+docker exec -it central-db /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Terya12345! -Q "SELECT name FROM sys.databases" -C
+docker exec -it client1-db /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Terya12345! -Q "SELECT name FROM sys.databases" -C
+docker exec -it client2-db /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Terya12345! -Q "SELECT name FROM sys.databases" -C
+docker exec -it client3-db /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Terya12345! -Q "SELECT name FROM sys.databases" -C
+```
+
+Or connect with SSMS/Azure Data Studio to:
+- `localhost:14330` (central-db)
+- `localhost:14331` (client1-db)
+- `localhost:14332` (client2-db)
+- `localhost:14333` (client3-db)
+
+Login:  
+- **User:** sa  
+- **Password:** Terya12345!
+
+---
+
+## Troubleshooting
+
+- **SSL errors with sqlcmd:**  
+  Add `-C` to the `sqlcmd` command or use `TrustServerCertificate=yes` in the connection string.
+- **Restore errors:**  
+  Make sure the logical file names in `restore-db-AdventureWorks.sql` match those in your `.bak` file.  
+  You can check logical names with:
+  ```sh
+  docker exec -it central-db /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Terya12345! -Q "RESTORE FILELISTONLY FROM DISK = '/var/opt/mssql/backup/AdventureWorks.bak'" -C
+  ```
+- **Password mismatch:**  
+  Ensure the `SA_PASSWORD` is the same in all services and in the `init` container.
+
+---
+
+## Stopping and Cleaning Up
+
+To stop the environment:
+```sh
+docker compose down
+```
+
+To remove all data volumes (reset everything):
+```sh
+docker compose down -v
+```
+
+---
+
+## Notes
+
+- The `init.sh` script and the restore SQL must be adapted if you use a different database or backup.
+- All containers communicate on the internal Docker network using their service names.
+
+---
+
+## License
+
+MIT

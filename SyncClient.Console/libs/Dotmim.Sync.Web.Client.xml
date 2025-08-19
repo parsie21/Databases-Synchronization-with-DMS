@@ -1,0 +1,1625 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dotmim.Sync.Web.Client</name>
+    </assembly>
+    <members>
+        <member name="T:Dotmim.Sync.HttpBatchesDownloadingArgs">
+            <summary>
+            Represents a request about to be send to the server to get batches .
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpBatchesDownloadingArgs.#ctor(Dotmim.Sync.SyncContext,Dotmim.Sync.Batch.BatchInfo,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpBatchesDownloadingArgs"/>
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadingArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadingArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadingArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadingArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadingArgs.ServerBatchInfo">
+            <summary>
+            Gets the server batch info.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadingArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpBatchesDownloadedArgs">
+            <summary>
+            Represents a request sent be send to the server to get batches .
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpBatchesDownloadedArgs.#ctor(Dotmim.Sync.Web.Client.HttpMessageSummaryResponse,Dotmim.Sync.SyncContext,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpBatchesDownloadingArgs"/>
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadedArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadedArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadedArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadedArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadedArgs.HttpSummary">
+            <summary>
+            Gets the http summary.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpBatchesDownloadedArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpClientSyncEventsId">
+            <summary>
+            Partial class to add interceptor logic.
+            </summary>
+            <summary>
+            HttpClient Sync Events Id.
+            </summary>
+            <summary>
+            HttpClient Sync Events Id.
+            </summary>
+            <summary>
+            Http Client Sync Events Id.
+            </summary>
+            <summary>
+            HttpGettingScopeRequestArgs extensions.
+            </summary>
+            <summary>
+            HttpClientSyncEventsId.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpBatchesDownloadingArgs">
+            <summary>
+            Gets the event id for HttpBatchesDownloadingArgs.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpBatchesDownloadedArgs">
+            <summary>
+            Gets the event id for HttpBatchesDownloadedArgs.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpSendingRequestMessage">
+            <summary>
+            Gets the event id when sending a request message.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpGettingResponseMessage">
+            <summary>
+            Gets the event id when getting a response message.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpSendingChangesRequest">
+            <summary>
+            Gets the event id for HttpSendingChangesRequest.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpGettingChangesRequest">
+            <summary>
+            Gets the event id for HttpGettingChangesRequest.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpGettingChangesResponse">
+            <summary>
+            Gets the event id for HttpGettingChangesResponse.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpGettingSchemaRequest">
+            <summary>
+            Gets the event id for HttpGettingSchemaRequest.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpGettingSchemaResponse">
+            <summary>
+            Gets the event id for HttpGettingSchemaResponse.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpGettingScopeRequest">
+            <summary>
+            Gets the event id for HttpGettingScopeRequest.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpGettingScopeResponse">
+            <summary>
+            Gets the event id for HttpGettingScopeResponse.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpClientSyncEventsId.HttpSyncPolicy">
+            <summary>
+            Gets the event id for HttpSyncPolicy.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpInterceptorsExtensions">
+            <summary>
+            Partial Interceptors extensions.
+            </summary>
+            <summary>
+            Partial Interceptors extensions.
+            </summary>
+            <summary>
+            Http Interceptors Extensions.
+            </summary>
+            <summary>
+            Partial Interceptors extensions.
+            </summary>
+            <summary>
+            Partial Interceptors extensions.
+            </summary>
+            <summary>
+            Partial Interceptors extensions.
+            </summary>
+            <summary>
+            Partial Interceptors extensions.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpBatchesDownloadingArgs(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpBatchesDownloadingArgs})">
+            <summary>
+            Intercept the provider when batches are about to be downloaded.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpBatchesDownloadingArgs(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpBatchesDownloadingArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when batches are about to be downloaded.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpBatchesDownloadedArgs(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpBatchesDownloadedArgs})">
+            <summary>
+            Intercept the provider when batches have been completely downloaded.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpBatchesDownloadedArgs(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpBatchesDownloadedArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when batches have been completely downloaded.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpSendingRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpSendingRequestMessageArgs})">
+            <summary>
+            Intercept the provider when an http request message is sent.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpSendingRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpSendingRequestMessageArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http request message is sent.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingResponse(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpGettingResponseMessageArgs})">
+            <summary>
+            Intercept the provider when an http message response is downloaded from remote side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingResponse(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpGettingResponseMessageArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http message response is downloaded from remote side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpResponseFailure(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpResponseFailureArgs})">
+            <summary>
+            Registers an action to be executed when a remote HTTP request made by the orchestrator fails.
+            </summary>
+            <param name="orchestrator">The WebRemoteOrchestrator instance.</param>
+            <param name="action">The action to execute upon encountering a failed HTTP response.</param>
+            <returns>The interceptor ID.</returns>
+            <remarks>
+            This extension method allows for the convenient registration of actions to handle failed HTTP responses
+            during remote orchestration. Upon failure, the specified action is invoked with details about the HTTP
+            response. This can be useful for implementing custom error handling, logging, or retry logic.
+            </remarks>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpResponseFailure(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpResponseFailureArgs,System.Threading.Tasks.Task})">
+            <inheritdoc cref="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpResponseFailure(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpResponseFailureArgs})"/>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpSendingChangesRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpSendingClientChangesRequestArgs})">
+            <summary>
+            Intercept the provider when batch changes is uploading to server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpSendingChangesRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpSendingClientChangesRequestArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when batch changes is uploading to server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingChangesRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpGettingServerChangesRequestArgs})">
+            <summary>
+            Intercept the provider when downloading a batch changes from server side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingChangesRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpGettingServerChangesRequestArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when downloading a batch changes from server side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingChangesResponse(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpGettingServerChangesResponseArgs})">
+            <summary>
+            Intercept the provider when a batch changes has been downloaded from server side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingChangesResponse(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpGettingServerChangesResponseArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when a batch changes has been downloaded from server side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingSchemaRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpGettingSchemaRequestArgs})">
+            <summary>
+            Intercept the provider when an http call is about to be made to get server schema.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingSchemaRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpGettingSchemaRequestArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http call is about to be made to get server schema.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingSchemaResponse(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpGettingSchemaResponseArgs})">
+            <summary>
+            Intercept the provider when an http call to get schema is done.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingSchemaResponse(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpGettingSchemaResponseArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http call to get schema is done.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingScopeRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpGettingScopeRequestArgs})">
+            <summary>
+            Intercept the provider when an http is about to be done to get server scope.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingScopeRequest(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpGettingScopeRequestArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http is about to be done to get server scope.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingScopeResponse(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpGettingScopeResponseArgs})">
+            <summary>
+            Intercept the provider when an http call to get scope is done.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpGettingScopeResponse(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpGettingScopeResponseArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when an http call to get scope is done.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpPolicyRetrying(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Action{Dotmim.Sync.HttpSyncPolicyArgs})">
+            <summary>
+            Intercept the provider when client is trying to send again an http request message.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpInterceptorsExtensions.OnHttpPolicyRetrying(Dotmim.Sync.Web.Client.WebRemoteOrchestrator,System.Func{Dotmim.Sync.HttpSyncPolicyArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Intercept the provider when client is trying to send again an http request message.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.Args.HttpClientSyncEventsId">
+            <summary>
+            Http Client Sync Events Id.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo">
+            <summary>
+            OldScopeInfo is used to serialize the scope info when we are using the old serialization format.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo"/>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo.Name">
+            <summary>
+            Gets or sets scope name. Shared by all clients and the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo.Id">
+            <summary>
+            Gets or sets id of the scope owner.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo.IsNewScope">
+            <summary>
+            Gets or sets a value indicating whether gets or Sets if the current provider is newly created one in database.
+            If new, we will override timestamp for first synchronisation to be sure to get all datas from server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo.Version">
+            <summary>
+            Gets or Sets the schema version.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo.LastSync">
+            <summary>
+            Gets or Sets the last datetime when a sync has successfully ended.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo.LastSyncTimestamp">
+            <summary>
+            Gets or Sets the last timestamp a sync has occured. This timestamp is set just 'before' sync start.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.BackwardCompatibility.OldScopeInfo.LastServerSyncTimestamp">
+            <summary>
+            Gets or Sets the last server timestamp a sync has occured for this scope client.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.IScopeMessage">
+            <summary>
+            Represents the SyncContext for the current sync session in an HTTP message.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.IScopeMessage.SyncContext">
+            <summary>
+            Gets or Sets the SyncContext.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse">
+            <summary>
+            HttpMessage containing a batch changes from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse"/>/>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.#ctor(Dotmim.Sync.SyncContext)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse"/>/>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.ServerStep">
+            <summary>
+            Gets or Sets the Server HttpStep.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.SyncContext">
+            <summary>
+            Gets or Sets the SyncContext.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.BatchIndex">
+            <summary>
+            Gets or sets the current batch index, send from the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.BatchCount">
+            <summary>
+            Gets or sets the number of batch to send.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.IsLastBatch">
+            <summary>
+            Gets or sets a value indicating whether gets or Sets if this is the last Batch send from the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.RemoteClientTimestamp">
+            <summary>
+            Gets or sets the remote client timestamp generated by the server database.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.Changes">
+            <summary>
+            Gets or sets the BatchParInfo send from the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.ServerChangesSelected">
+            <summary>
+            Gets or sets the changes stats from the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.ClientChangesApplied">
+            <summary>
+            Gets or sets the changes stats from the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesResponse.ConflictResolutionPolicy">
+            <summary>
+            Gets or Sets the conflict resolution policy from the server.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageGetMoreChangesRequest">
+            <summary>
+            HttpMessage to get more changes from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageGetMoreChangesRequest.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageGetMoreChangesRequest"/>/>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageGetMoreChangesRequest.#ctor(Dotmim.Sync.SyncContext,System.Int32)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageGetMoreChangesRequest"/>/>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageGetMoreChangesRequest.SyncContext">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageGetMoreChangesRequest.BatchIndexRequested">
+            <summary>
+            Gets or sets the batch index requested.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest">
+            <summary>
+            HttpMessage to get changes from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest" />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.#ctor(Dotmim.Sync.SyncContext,Dotmim.Sync.ScopeInfoClient)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest" />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.SyncContext">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.ScopeInfoClient">
+            <summary>
+            Gets or sets the client scope info.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.BatchIndex">
+            <summary>
+            Gets or sets get the current batch index.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.BatchCount">
+            <summary>
+            Gets or sets get the current batch count.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.IsLastBatch">
+            <summary>
+            Gets or sets a value indicating whether gets or Sets if this is the last Batch to sent to server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.Changes">
+            <summary>
+            Gets or sets changes to send.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.ClientLastSyncTimestamp">
+            <summary>
+            Gets or sets client last sync timestamp.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest.OldScopeInfo">
+            <summary>
+            Gets or sets pre 0.9.6 old ScopeInfo object.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageEnsureSchemaResponse">
+            <summary>
+            HttpMessage containing a schema from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEnsureSchemaResponse.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageEnsureSchemaResponse" />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEnsureSchemaResponse.#ctor(Dotmim.Sync.SyncContext,Dotmim.Sync.ScopeInfo)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageEnsureSchemaResponse" />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEnsureSchemaResponse.SyncContext">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEnsureSchemaResponse.Schema">
+            <summary>
+            Gets or Sets the schema because the ServerScopeInfo won't have it since it's marked (on purpose) as IgnoreDataMember (and then not serialized).
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEnsureSchemaResponse.ServerScopeInfo">
+            <summary>
+            Gets or Sets the server scope info, from server.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesResponse">
+            <summary>
+            HttpMessage containing scopes from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesResponse.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesResponse"/>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesResponse.#ctor(Dotmim.Sync.SyncContext,Dotmim.Sync.ScopeInfo)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesResponse"/>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesResponse.SyncContext">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesResponse.ServerScopeInfo">
+            <summary>
+            Gets or Sets the schema option (without schema itself, that is not serializable).
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesRequest">
+            <summary>
+            HttpMessage to get scopes from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesRequest.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesRequest"/> class.
+            Create a new message to web remote server.
+            Scope info table name is not provided since we do not care about it on the server side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesRequest.#ctor(Dotmim.Sync.SyncContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesRequest"/> class.
+            Create a new message to web remote server.
+            Scope info table name is not provided since we do not care about it on the server side.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEnsureScopesRequest.SyncContext">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageOperationRequest">
+            <summary>
+            HttpMessage to get an hypothetical operation override from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageOperationRequest.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageOperationRequest" />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageOperationRequest.#ctor(Dotmim.Sync.SyncContext,Dotmim.Sync.ScopeInfo,Dotmim.Sync.ScopeInfoClient)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageOperationRequest" />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageOperationRequest.SyncContext">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageOperationRequest.ScopeInfoFromClient">
+            <summary>
+            Gets or Sets the reference scope for local repository, stored on server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageOperationRequest.ScopeInfoClient">
+            <summary>
+            Gets or Sets the reference scope for local repository, stored on server.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageOperationResponse">
+            <summary>
+            HttpMessage containing an hypothetical operation override from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageOperationResponse.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageOperationResponse" />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageOperationResponse.#ctor(Dotmim.Sync.SyncContext,Dotmim.Sync.Enumerations.SyncOperation)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageOperationResponse" />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageOperationResponse.SyncContext">
+            <inheritdoc  />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageOperationResponse.SyncOperation">
+            <summary>
+            Gets or Sets the Sync Operation sent from the server that should be run on the client.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampResponse">
+            <summary>
+            HttpMessage to containing the remote timestamp from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampResponse.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampResponse" />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampResponse.#ctor(Dotmim.Sync.SyncContext,System.Int64)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampResponse" />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampResponse.SyncContext">
+            <inheritdoc  />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampResponse.RemoteClientTimestamp">
+            <summary>
+            Gets or sets the remote client timestamp generated by the server database.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampRequest">
+            <summary>
+            HttpMessage to get the remote timestamp from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampRequest.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampRequest" />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampRequest.#ctor(Dotmim.Sync.SyncContext)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampRequest" />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageRemoteTimestampRequest.SyncContext">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse">
+            <summary>
+            HttpMessage to get a summary to apply on the client, from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse" />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.#ctor(Dotmim.Sync.SyncContext)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse" />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.SyncContext">
+            <summary>
+            Gets or Sets the SyncContext.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.BatchInfo">
+            <summary>
+            Gets or Sets the conflict resolution policy from the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.RemoteClientTimestamp">
+            <summary>
+            Gets or sets the remote client timestamp generated by the server database.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.Step">
+            <summary>
+            Gets or sets the HttpStep.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.Changes">
+            <summary>
+            Gets or Sets the container changes when in memory requested by the client.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.ServerChangesSelected">
+            <summary>
+            Gets or Sets the summary server changes applied on server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.ClientChangesApplied">
+            <summary>
+            Gets or Sets the summary client changes applied on client.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageSummaryResponse.ConflictResolutionPolicy">
+            <summary>
+            Gets or Sets the conflict resolution policy from the server.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest">
+            <summary>
+            HttpMessage to send an end session request to the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest" />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.#ctor(Dotmim.Sync.SyncContext)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest" />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.SyncContext">
+            <summary>
+            Gets or Sets the SyncContext.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.StartTime">
+            <summary>
+            Gets or sets the time when a sync sessionn started.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.CompleteTime">
+            <summary>
+            Gets or sets the time when a sync session ended.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.ChangesAppliedOnServer">
+            <summary>
+            Gets or Sets the summary of client changes that where applied on the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.ChangesAppliedOnClient">
+            <summary>
+            Gets or Sets the summary of server changes that where applied on the client.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.SnapshotChangesAppliedOnClient">
+            <summary>
+            Gets or Sets the summary of snapshot changes that where applied on the client.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.ClientChangesSelected">
+            <summary>
+            Gets or Sets the summary of client changes to be applied on the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.ServerChangesSelected">
+            <summary>
+            Gets or Sets the summary of server changes selected to be applied on the client.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionRequest.SyncExceptionMessage">
+            <summary>
+            Gets or Sets the exception occured on client if any.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpMessageEndSessionResponse">
+            <summary>
+            HttpMessage to get the end session response from the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEndSessionResponse.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageEndSessionResponse" />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpMessageEndSessionResponse.#ctor(Dotmim.Sync.SyncContext)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpMessageEndSessionResponse" />
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpMessageEndSessionResponse.SyncContext">
+            <inheritdoc  />
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpStep">
+            <summary>
+            Http steps involved during a sync beetween a proxy client and proxy server.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.None">
+            <summary>
+            No step.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.EnsureSchema">
+            <summary>
+            Ensure schema.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.EnsureScopes">
+            <summary>
+            Ensure scopes.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.SendChanges">
+            <summary>
+            Send changes.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.SendChangesInProgress">
+            <summary>
+            Send changes in progress.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.GetChanges">
+            <summary>
+            Get changes.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.GetEstimatedChangesCount">
+            <summary>
+            Get estimated changes count.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.GetMoreChanges">
+            <summary>
+            Get more changes.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.GetChangesInProgress">
+            <summary>
+            Get changes in progress.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.GetSnapshot">
+            <summary>
+            Get snapshot.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.GetSummary">
+            <summary>
+            Get summary.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.SendEndDownloadChanges">
+            <summary>
+            Send end download changes.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.GetRemoteClientTimestamp">
+            <summary>
+            Get remote client timestamp.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.GetOperation">
+            <summary>
+            Get operation.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.Web.Client.HttpStep.EndSession">
+            <summary>
+            End session.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.HttpSyncWebException">
+            <summary>
+            HttpSyncWebException is thrown when an HTTP request fails with a specific status code.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpSyncWebException.ReasonPhrase">
+            <summary>
+            Gets or sets the reason phrase which typically is sent by servers together with the status code.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.HttpSyncWebException.StatusCode">
+            <summary>
+            Gets or sets the status code of the HTTP response.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.HttpSyncWebException.#ctor(System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.Web.Client.HttpSyncWebException" />
+        </member>
+        <member name="T:Dotmim.Sync.Web.Client.WebRemoteOrchestrator">
+            <summary>
+            Contains the logic to apply changes to the server and get changes from the server.
+            </summary>
+            <summary>
+            Contains the forbidden logic to handle batch info on the server side.
+            </summary>
+            <summary>
+            Contains the forbidden logic to handle constraints on the server side.
+            </summary>
+            <summary>
+            Represents a web remote orchestrator able to communicate with a web server orchestrator.
+            </summary>
+            <summary>
+            Contains the logic to get changes from the server side.
+            </summary>
+            <summary>
+            Contains the forbidden logic to handle metadata on the server side.
+            </summary>
+            <summary>
+            Contains the logic to get the hypothetical override operation from the server.
+            </summary>
+            <summary>
+            Contains the forbidden logic to handle provisioning on the server side.
+            </summary>
+            <summary>
+            Contains the forbidden logic to handle schema on the server side.
+            </summary>
+            <summary>
+            Contains the forbidden logic to handle scope info clients on the server side.
+            </summary>
+            <summary>
+            Contains the logic to handle scope info on the server side.
+            </summary>
+            <summary>
+            Contains the logic to handle session on the server side.
+            </summary>
+            <summary>
+            Contains the logic to handle snapshot on the server side.
+            </summary>
+            <summary>
+            Contains the logic to handle timestamp on the server side.
+            </summary>
+            <summary>
+            Contains the forbidden logic to handle upgrade on the server side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalApplyThenGetChangesAsync(Dotmim.Sync.ScopeInfoClient,Dotmim.Sync.ScopeInfo,Dotmim.Sync.SyncContext,Dotmim.Sync.ClientSyncChanges,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Apply changes.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.SaveTableToBatchPartInfoAsync(Dotmim.Sync.Batch.BatchInfo,Dotmim.Sync.Batch.BatchPartInfo,Dotmim.Sync.SyncTable)">
+            <summary>
+            You are not allowed to save a batch info on the server from the client side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.SaveTableToBatchPartInfoAsync(System.String,Dotmim.Sync.Batch.BatchInfo,Dotmim.Sync.Batch.BatchPartInfo,Dotmim.Sync.SyncTable)">
+            <summary>
+            You are not allowed to save a batch info on the server from the client side.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ResetTableAsync(Dotmim.Sync.ScopeInfo,System.String,System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Http Client is not authorized to ask for a table reset on the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ResetTablesAsync(Dotmim.Sync.ScopeInfo,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Http Client is not authorized to ask for a table reset on the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.DisableConstraintsAsync(Dotmim.Sync.ScopeInfo,System.String,System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Http Client is not authorized to command a disable constraints on the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.EnableConstraintsAsync(Dotmim.Sync.ScopeInfo,System.String,System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Http Client is not authorized to command an enable constraints on the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ResetTableAsync(Dotmim.Sync.ScopeInfo,Dotmim.Sync.SyncContext,System.String,System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Http Client is not authorized to ask for a table reset on the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.Identifier">
+            <summary>
+            Gets or Sets a custom identifier, that can be used on server side to choose the correct web server agent.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.Converter">
+            <summary>
+            Gets or Sets custom converter for all rows.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.MaxDownladingDegreeOfParallelism">
+            <summary>
+            Gets max threads used to get parts from server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.SerializerFactory">
+            <summary>
+            Gets or Sets serializer used to serialize and deserialize rows coming from server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.SyncPolicy">
+            <summary>
+            Gets or Sets a custom sync policy.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ServiceUri">
+            <summary>
+            Gets or Sets the service uri used to reach the server api.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.HttpClient">
+            <summary>
+            Gets or Sets the HttpClient instanced used for this web client orchestrator.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.Cookie">
+            <summary>
+            Gets ts the cookie used for this web client orchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.GetServiceHost">
+            <summary>
+            Gets service uri as a string. "undefined" if null.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.#ctor(System.String,Dotmim.Sync.Serialization.IConverter,System.Net.Http.HttpClient,Dotmim.Sync.SyncPolicy,System.Int32,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dotmim.Sync.Web.Client.WebRemoteOrchestrator"/> class.
+            Gets a new web proxy orchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.#ctor(System.Uri,Dotmim.Sync.Serialization.IConverter,System.Net.Http.HttpClient,Dotmim.Sync.SyncPolicy,System.Int32,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dotmim.Sync.Web.Client.WebRemoteOrchestrator"/> class.
+            Gets a new web proxy orchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.TryGetHeaderValue(System.Net.Http.Headers.HttpResponseHeaders,System.String,System.String@)">
+            <summary>
+            Try to get a header value from the response headers.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ReadContentFromResponseAsync(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Read the content from a response message.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.AddScopeParameter(System.String,System.String)">
+            <summary>
+            Adds some scope parameters.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.AddCustomHeader(System.String,System.String)">
+            <summary>
+            Adds some custom headers.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ProcessRequestAsync``1(Dotmim.Sync.SyncContext,Dotmim.Sync.Web.Client.IScopeMessage,Dotmim.Sync.Web.Client.HttpStep,System.Int32,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Deserialize the message and then send back it to caller.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ProcessRequestAsync(Dotmim.Sync.Web.Client.IScopeMessage,Dotmim.Sync.Web.Client.HttpStep,System.Int32,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            This ProcessRequestAsync will not deserialize the message and then send back directly the HttpResponseMessage.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ToString">
+            <summary>
+            Gets the service URI.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.HandleSyncErrorAsync(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Handle a request error.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.EnsurePolicy(Dotmim.Sync.SyncPolicy)">
+            <summary>
+            Ensure we have policy. Create a new one, if not provided.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InvokeResponseFailureInterceptors(System.Net.Http.HttpResponseMessage,System.String)">
+            <summary>
+            Invokes response failure Interceptors to handle unsuccessful HTTP responses.
+            This method triggers interception logic to process and respond to failed HTTP responses,
+            allowing for centralized error handling and customization.
+            </summary>
+            <remarks>
+            Response failure Interceptors provide a mechanism for executing custom logic
+            when an HTTP response indicates failure (non-success status codes).
+            Interceptors may include logging, error handling, retry logic, or other actions
+            to be taken upon encountering failed responses from API calls.
+            </remarks>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.GetChangesAsync(Dotmim.Sync.ScopeInfoClient,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc cref="M:Dotmim.Sync.RemoteOrchestrator.GetChangesAsync(Dotmim.Sync.ScopeInfoClient,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)"/>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.GetEstimatedChangesCountAsync(Dotmim.Sync.ScopeInfoClient,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+             <summary>
+             We can't get changes from server, from a web client orchestrator.
+             </summary>
+            
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.DeleteMetadatasAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Http Client is not authorized to ask metadatas deletion on the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.DeleteMetadatasAsync(System.Int64,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Http Client is not authorized to ask metadatas deletion on the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalGetOperationAsync(Dotmim.Sync.ScopeInfo,Dotmim.Sync.ScopeInfo,Dotmim.Sync.ScopeInfoClient,Dotmim.Sync.SyncContext,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Get server scope from server, by sending an http request to the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.DeprovisionAsync(System.String,Dotmim.Sync.Enumerations.SyncProvision,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a deprovision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ProvisionAsync(Dotmim.Sync.ScopeInfo,Dotmim.Sync.Enumerations.SyncProvision,System.Boolean,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a provision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ProvisionAsync(System.String,Dotmim.Sync.Enumerations.SyncProvision,System.Boolean,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a provision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ProvisionAsync(System.String,Dotmim.Sync.SyncSetup,Dotmim.Sync.Enumerations.SyncProvision,System.Boolean,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a provision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ProvisionAsync(Dotmim.Sync.Enumerations.SyncProvision,System.Boolean,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a provision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.ProvisionAsync(Dotmim.Sync.SyncSetup,Dotmim.Sync.Enumerations.SyncProvision,System.Boolean,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a provision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.DeprovisionAsync(System.String,Dotmim.Sync.SyncSetup,Dotmim.Sync.Enumerations.SyncProvision,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a deprovision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.DeprovisionAsync(Dotmim.Sync.Enumerations.SyncProvision,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a deprovision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.DeprovisionAsync(Dotmim.Sync.SyncSetup,Dotmim.Sync.Enumerations.SyncProvision,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a deprovision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.DropAllAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a deprovision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalShouldProvisionServerAsync(Dotmim.Sync.ScopeInfo,Dotmim.Sync.SyncContext,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Raise an error, as you are not authorized to launch a provision on the server from a client.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.GetSchemaAsync(Dotmim.Sync.SyncSetup,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Method not allowed from WebRemoteOrchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.GetSchemaAsync(System.String,Dotmim.Sync.SyncSetup,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Method not allowed from WebRemoteOrchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.GetAllScopeInfoClientsAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Method not allowed from WebRemoteOrchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.GetScopeInfoClientAsync(System.Guid,System.String,Dotmim.Sync.SyncParameters,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Method not allowed from WebRemoteOrchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.SaveScopeInfoClientAsync(Dotmim.Sync.ScopeInfoClient,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Method not allowed from WebRemoteOrchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.SaveScopeInfoAsync(Dotmim.Sync.ScopeInfo,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Method not allowed from WebRemoteOrchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.DeleteScopeInfoAsync(Dotmim.Sync.ScopeInfo,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Method not allowed from WebRemoteOrchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalLoadScopeInfoAsync(Dotmim.Sync.SyncContext,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalEnsureScopeInfoAsync(Dotmim.Sync.SyncContext,Dotmim.Sync.SyncSetup,System.Boolean,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalBeginSessionAsync(Dotmim.Sync.SyncContext,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalEndSessionAsync(Dotmim.Sync.SyncContext,Dotmim.Sync.SyncResult,Dotmim.Sync.ServerSyncChanges,Dotmim.Sync.SyncException,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalGetSnapshotAsync(Dotmim.Sync.ScopeInfo,Dotmim.Sync.SyncContext,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalGetLocalTimestampAsync(Dotmim.Sync.SyncContext,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.NeedsToUpgradeAsync(Dotmim.Sync.SyncContext)">
+            <summary>
+            Not Allowed from WebRemoteOrchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.Web.Client.WebRemoteOrchestrator.InternalUpgradeAsync(Dotmim.Sync.SyncContext,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.IProgress{Dotmim.Sync.ProgressArgs},System.Threading.CancellationToken)">
+            <summary>
+            Not Allowed from WebRemoteOrchestrator.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.Web.WebSyncException">
+            <summary>
+            Serialize exception to be sent over the wire.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.WebSyncException.TypeName">
+            <summary>
+            Gets or Sets type name of inner exception.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.WebSyncException.Message">
+            <summary>
+            Gets or Sets the MEssage associated to the exception.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.WebSyncException.SyncStage">
+            <summary>
+            Gets or sets sync stage when exception occured.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.WebSyncException.Number">
+            <summary>
+            Gets or sets data source error number if available.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.WebSyncException.DataSource">
+            <summary>
+            Gets or Sets data source if available.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.Web.WebSyncException.InitialCatalog">
+            <summary>
+            Gets or Sets initial catalog if available.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpGettingResponseMessageArgs">
+            <summary>
+            When Getting response from remote orchestrator.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpGettingResponseMessageArgs.#ctor(System.Net.Http.HttpResponseMessage,System.Uri,Dotmim.Sync.Web.Client.HttpStep,Dotmim.Sync.SyncContext,System.Object,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpGettingResponseMessageArgs" />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingResponseMessageArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingResponseMessageArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingResponseMessageArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingResponseMessageArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingResponseMessageArgs.Response">
+            <summary>
+            Gets the response message.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingResponseMessageArgs.Uri">
+            <summary>
+            Gets the uri.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingResponseMessageArgs.Step">
+            <summary>
+            Gets the step.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingResponseMessageArgs.Data">
+            <summary>
+            Gets the data.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingResponseMessageArgs.Host">
+            <summary>
+            Gets the host. (same as this.Source).
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpSendingRequestMessageArgs">
+            <summary>
+            When sending request.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpSendingRequestMessageArgs.#ctor(System.Net.Http.HttpRequestMessage,Dotmim.Sync.SyncContext,System.Object,System.String)">
+            <inheritdoc  cref="T:Dotmim.Sync.HttpSendingRequestMessageArgs"/>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingRequestMessageArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingRequestMessageArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingRequestMessageArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingRequestMessageArgs.Request">
+            <summary>
+            Gets the request.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingRequestMessageArgs.Data">
+            <summary>
+            Gets the data.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingRequestMessageArgs.Host">
+            <summary>
+            Gets the host. (Similar to this.Source).
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpResponseFailureArgs">
+            <summary>
+            Represents the arguments provided when an HTTP response fails.
+            </summary>
+            <remarks>
+            This class encapsulates the details of a failed HTTP response, including the status code,
+            reason phrase, error content, headers, and the URI of the original request.
+            </remarks>
+        </member>
+        <member name="M:Dotmim.Sync.HttpResponseFailureArgs.#ctor(System.Int32,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.String},System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dotmim.Sync.HttpResponseFailureArgs"/> class with the specified parameters.
+            </summary>
+            <param name="statusCode">The HTTP status code of the failed response.</param>
+            <param name="reasonPhrase">The reason phrase associated with the HTTP status code.</param>
+            <param name="errorContent">The content of the response body providing additional details about the error.</param>
+            <param name="headers">A dictionary containing the HTTP headers associated with the failed response.</param>
+            <param name="requestUri">The URI of the original request that resulted in the failed response.</param>
+        </member>
+        <member name="P:Dotmim.Sync.HttpResponseFailureArgs.StatusCode">
+            <summary>
+            Gets the HTTP status code of the failed response.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpResponseFailureArgs.ReasonPhrase">
+            <summary>
+            Gets the reason phrase associated with the HTTP status code.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpResponseFailureArgs.ErrorContent">
+            <summary>
+            Gets the content of the response body providing additional details about the error.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpResponseFailureArgs.Headers">
+            <summary>
+            Gets the HTTP headers associated with the failed response.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpResponseFailureArgs.RequestUri">
+            <summary>
+            Gets the URI of the original request that resulted in the failed response.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpGettingServerChangesRequestArgs">
+            <summary>
+            Represents a request about to be send to the server to get batches .
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpGettingServerChangesRequestArgs.#ctor(System.Int32,System.Int32,Dotmim.Sync.SyncContext,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpGettingServerChangesRequestArgs" />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesRequestArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesRequestArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesRequestArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesRequestArgs.BatchIndexRequested">
+            <summary>
+            Gets or sets the batch index that is asked to be retrieved from the server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesRequestArgs.BatchCount">
+            <summary>
+            Gets or sets the batch count to be received from server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesRequestArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesRequestArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.HttpGettingServerChangesResponseArgs">
+            <summary>
+            Represents a response received from the server after getting batches.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpGettingServerChangesResponseArgs.#ctor(Dotmim.Sync.Batch.BatchInfo,System.Int32,System.Int32,Dotmim.Sync.SyncContext,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpGettingServerChangesResponseArgs" />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesResponseArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesResponseArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesResponseArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesResponseArgs.BatchInfo">
+            <summary>
+            Gets the batch info.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesResponseArgs.BatchIndex">
+            <summary>
+            Gets the batch index.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesResponseArgs.BatchRowsCount">
+            <summary>
+            Gets the batch rows count.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesResponseArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingServerChangesResponseArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.HttpSendingClientChangesRequestArgs">
+            <summary>
+            Represents the arguments provided when an HTTP request is about to be sent to the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpSendingClientChangesRequestArgs.#ctor(Dotmim.Sync.Web.Client.HttpMessageSendChangesRequest,System.Int32,System.Int32,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpSendingClientChangesRequestArgs" />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingClientChangesRequestArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingClientChangesRequestArgs.Request">
+            <summary>
+            Gets the request.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingClientChangesRequestArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingClientChangesRequestArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingClientChangesRequestArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingClientChangesRequestArgs.RowsCount">
+            <summary>
+            Gets or Sets the rows count sended.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingClientChangesRequestArgs.TotalRowsCount">
+            <summary>
+            Gets or Sets the total tables rows count to send.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSendingClientChangesRequestArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.HttpGettingSchemaRequestArgs">
+            <summary>
+            Represents a request made to the server to get the server scope info.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpGettingSchemaRequestArgs.#ctor(Dotmim.Sync.SyncContext,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpGettingSchemaRequestArgs" />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaRequestArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaRequestArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaRequestArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaRequestArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaRequestArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpGettingSchemaResponseArgs">
+            <summary>
+            Represents a response received from the server after getting the server scope info.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpGettingSchemaResponseArgs.#ctor(Dotmim.Sync.ScopeInfo,Dotmim.Sync.SyncSet,Dotmim.Sync.SyncContext,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpGettingSchemaResponseArgs" />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaResponseArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaResponseArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaResponseArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaResponseArgs.Schema">
+            <summary>
+            Gets or sets the schema.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaResponseArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaResponseArgs.ScopeInfoFromServer">
+            <summary>
+            Gets or sets the scope info from server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingSchemaResponseArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpGettingScopeResponseArgs">
+            <summary>
+            Represents a response from server containing the server scope info.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpGettingScopeResponseArgs.#ctor(Dotmim.Sync.ScopeInfo,Dotmim.Sync.SyncContext,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpGettingScopeResponseArgs" />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeResponseArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeResponseArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeResponseArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeResponseArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeResponseArgs.ScopeInfoFromServer">
+            <summary>
+            Gets the server scope info.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeResponseArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpGettingScopeRequestArgs">
+            <summary>
+            Represents a request made to the server to get the server scope info.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpGettingScopeRequestArgs.#ctor(Dotmim.Sync.SyncContext,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpGettingScopeRequestArgs" />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeRequestArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeRequestArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeRequestArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeRequestArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpGettingScopeRequestArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.HttpSyncPolicyArgs">
+            <summary>
+            Represent the arguments when the client is trying to send again an http request message.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.HttpSyncPolicyArgs.#ctor(System.Int32,System.Int32,System.TimeSpan,System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.HttpSyncPolicyArgs" />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSyncPolicyArgs.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSyncPolicyArgs.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSyncPolicyArgs.ProgressLevel">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSyncPolicyArgs.EventId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dotmim.Sync.HttpSyncPolicyArgs.RetryCount">
+            <summary>
+            Gets the max number of retry for this http request.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSyncPolicyArgs.RetryNumber">
+            <summary>
+            Gets the current retry number.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSyncPolicyArgs.Delay">
+            <summary>
+            Gets the delay until next retry.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.HttpSyncPolicyArgs.Host">
+            <summary>
+            Gets the host.
+            </summary>
+        </member>
+    </members>
+</doc>

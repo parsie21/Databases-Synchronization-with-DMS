@@ -1,0 +1,950 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dotmim.Sync.SqlServer</name>
+    </assembly>
+    <members>
+        <member name="T:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure">
+            <summary>
+            Sql Builder for Sql Server stored procedures.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.TableDescription">
+            <summary>
+            Gets the table description.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.SqlObjectNames">
+            <summary>
+            Gets the sql object names.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.SqlDbMetadata">
+            <summary>
+            Gets the sql database metadata.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.#ctor(Dotmim.Sync.SyncTable,Dotmim.Sync.SqlServer.Builders.SqlObjectNames,Dotmim.Sync.SqlServer.Manager.SqlDbMetadata)">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure" />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.GetExistsStoredProcedureCommandAsync(Dotmim.Sync.Builders.DbStoredProcedureType,Dotmim.Sync.SyncFilter,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get the command to check if a stored procedure exists.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.GetDropStoredProcedureCommandAsync(Dotmim.Sync.Builders.DbStoredProcedureType,Dotmim.Sync.SyncFilter,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get the command to drop a stored procedure.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.GetCreateStoredProcedureCommandAsync(Dotmim.Sync.Builders.DbStoredProcedureType,Dotmim.Sync.SyncFilter,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get the command to create a stored procedure.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.AddPkColumnParametersToCommand(Microsoft.Data.SqlClient.SqlCommand)">
+            <summary>
+            Add the primary key columns to the command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.AddColumnParametersToCommand(Microsoft.Data.SqlClient.SqlCommand)">
+            <summary>
+            Add the columns parameters to the command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.GetSqlParameter(Dotmim.Sync.SyncColumn)">
+            <summary>
+            Get Sql Parameter.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateParameterDeclaration(Microsoft.Data.SqlClient.SqlParameter)">
+            <summary>
+            From a SqlParameter, create the declaration.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateProcedureCommand(System.Func{Microsoft.Data.SqlClient.SqlCommand},System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create a stored procedure Command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.BulkSelectUnsuccessfulRows">
+            <summary>
+            Create bulk command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.BuildBulkDeleteCommand">
+            <summary>
+            Create a bulk delete command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateBulkDeleteCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create a bulk delete stored procedure command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.BuildBulkUpdateCommand(System.Boolean)">
+            <summary>
+            Create bulk update command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateBulkUpdateCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create bulk update stored procedure command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.BuildResetCommand">
+            <summary>
+            Create reset command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.BuildDeleteCommand">
+            <summary>
+            Create Delete command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateDeleteCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create delete stored procedure command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateBulkTableTypeCommandText">
+            <summary>
+            Create bulk table type command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateBulkTableTypeCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create bulk table type stored procedure command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.BuildUpdateCommand(System.Boolean)">
+            <summary>
+            Create update command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateUpdateCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create update stored procedure command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateFilterParameters(Microsoft.Data.SqlClient.SqlCommand,Dotmim.Sync.SyncFilter)">
+            <summary>
+            Add all sql parameters.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateFilterCustomJoins(Dotmim.Sync.SyncFilter)">
+            <summary>
+            Create all custom joins from within a filter.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateFilterWhereSide(Dotmim.Sync.SyncFilter,System.Boolean)">
+            <summary>
+            Create all side where criteria from within a filter.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateFilterCustomWheres(Dotmim.Sync.SyncFilter)">
+            <summary>
+            Create all custom wheres from witing a filter.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.BuildSelectIncrementalChangesCommand(Dotmim.Sync.SyncFilter)">
+            <summary>
+            Create select incremental changes command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateSelectIncrementalChangesCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create select incremental changes stored procedures command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateSelectIncrementalChangesWithFilterCommand(Dotmim.Sync.SyncFilter,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create select incremental changes stored procedures with filters command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.BuildSelectInitializedChangesCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction,Dotmim.Sync.SyncFilter)">
+            <summary>
+            Create select initial changes command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateSelectInitializedChangesCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create select initial changes stored procedures command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderProcedure.CreateSelectInitializedChangesWithFilterCommand(Dotmim.Sync.SyncFilter,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Create select initial changes stored procedures with filters command.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable">
+            <summary>
+            Sql table builder for Sql Server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.TableDescription">
+            <summary>
+            Gets the table description.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.SqlObjectNames">
+            <summary>
+            Gets the sql object names.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.SqlDbMetadata">
+            <summary>
+            Gets the sql database metadata.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.#ctor(Dotmim.Sync.SyncTable,Dotmim.Sync.SqlServer.Builders.SqlObjectNames,Dotmim.Sync.SqlServer.Manager.SqlDbMetadata)">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable"/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.NormalizeRelationName(System.String)">
+            <summary>
+            Ensure the relation name is correct to be created in MySql.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetCreateSchemaCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get the create schema command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetCreateTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get Create table command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetExistsTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get Exists table command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetExistsSchemaCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get Exists schema command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetDropTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get Drop table command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetAddColumnCommandAsync(System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get Add column command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetDropColumnCommandAsync(System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get Drop column command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetExistsColumnCommandAsync(System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get Exists column command.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetPrimaryKeysAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get the primary keys for the current table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetRelationsAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get relations definition for the current table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTable.GetColumnsAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get the table columns definition.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrackingTable">
+            <summary>
+            Sql tracking table builder for Sql Server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrackingTable.TableDescription">
+            <summary>
+            Gets the table description.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrackingTable.SqlObjectNames">
+            <summary>
+            Gets the sql object names.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrackingTable.SqlDbMetadata">
+            <summary>
+            Gets the sql database metadata.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrackingTable.#ctor(Dotmim.Sync.SyncTable,Dotmim.Sync.SqlServer.Builders.SqlObjectNames,Dotmim.Sync.SqlServer.Manager.SqlDbMetadata)">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrackingTable" />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrackingTable.GetCreateTrackingTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Gets the command to create the tracking table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrackingTable.GetDropTrackingTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get the command to drop the tracking table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrackingTable.GetExistsTrackingTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Get the command to check if the tracking table exists.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrigger">
+            <summary>
+            Sql trigger builder for Sql Server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrigger.TableDescription">
+            <summary>
+            Gets the table description.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrigger.SqlObjectNames">
+            <summary>
+            Gets the sql object names.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrigger.SqlDbMetadata">
+            <summary>
+            Gets the sql database metadata.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrigger.#ctor(Dotmim.Sync.SyncTable,Dotmim.Sync.SqlServer.Builders.SqlObjectNames,Dotmim.Sync.SqlServer.Manager.SqlDbMetadata)">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrigger" />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrigger.GetExistsTriggerCommandAsync(Dotmim.Sync.Builders.DbTriggerType,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Gets the command to check if a trigger exists.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrigger.GetDropTriggerCommandAsync(Dotmim.Sync.Builders.DbTriggerType,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Gets the command to drop a trigger.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlBuilderTrigger.GetCreateTriggerCommandAsync(Dotmim.Sync.Builders.DbTriggerType,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Gets the command to create a trigger.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.Builders.SqlDatabaseBuilder">
+            <summary>
+            Sql builder for Sql Server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlDatabaseBuilder.EnsureDatabaseAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlDatabaseBuilder.GetAllTablesAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlDatabaseBuilder.EnsureTableAsync(System.String,System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlDatabaseBuilder.GetHelloAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlDatabaseBuilder.GetTableAsync(System.String,System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlDatabaseBuilder.ExistsTableAsync(System.String,System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlDatabaseBuilder.DropsTableIfExistsAsync(System.String,System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlDatabaseBuilder.RenameTableAsync(System.String,System.String,System.String,System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.Builders.SqlObjectNames">
+            <summary>
+            Sql Object Names.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.LeftQuote">
+            <summary>
+            Gets the left quote character.
+            </summary>
+        </member>
+        <member name="F:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.RightQuote">
+            <summary>
+            Gets the right quote character.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TableDescription">
+            <summary>
+            Gets the table description.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.ScopeInfo">
+            <summary>
+            Gets the scope info.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TrackingTableName">
+            <summary>
+            Gets the parsed tracking table name, wihtout any quotes characters.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TrackingTableNormalizedFullName">
+            <summary>
+            Gets the parsed normalized tracking table full name.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TrackingTableNormalizedShortName">
+            <summary>
+            Gets the parsed normalized tracking table short name.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TrackingTableQuotedFullName">
+            <summary>
+            Gets the parsed quoted tracking table full name.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TrackingTableQuotedShortName">
+            <summary>
+            Gets the parsed quoted tracking table short name.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TrackingTableSchemaName">
+            <summary>
+            Gets the parsed tracking table schema name. if empty, "dbo" is returned.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TableName">
+            <summary>
+            Gets the parsed table name, without any quotes characters.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TableNormalizedFullName">
+            <summary>
+            Gets the parsed normalized table full name (with schema, if any).
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TableNormalizedShortName">
+            <summary>
+            Gets the parsed normalized table short name (without schema, if any).
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TableQuotedFullName">
+            <summary>
+            Gets the parsed quoted table full name (with schema, if any).
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TableQuotedShortName">
+            <summary>
+            Gets the parsed quoted table short name (without schema, if any).
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.TableSchemaName">
+            <summary>
+            Gets the parsed table schema name. if empty, "dbo" is returned.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.GetStoredProcedureCommandName(Dotmim.Sync.Builders.DbStoredProcedureType,Dotmim.Sync.SyncFilter)">
+            <summary>
+            Get the command name for a stored procedure type.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.GetTriggerCommandName(Dotmim.Sync.Builders.DbTriggerType)">
+            <summary>
+            Get the trigger name for a trigger type.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.GetCommandName(Dotmim.Sync.Builders.DbCommandType,Dotmim.Sync.SyncFilter)">
+            <summary>
+            Get a command string from the command type.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlObjectNames.#ctor(Dotmim.Sync.SyncTable,Dotmim.Sync.ScopeInfo)">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.Builders.SqlObjectNames"/>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder">
+            <summary>
+            The SqlBuilder class is the Sql implementation of DbBuilder class.
+            In charge of creating tracking table, stored proc, triggers and adapters.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.SqlObjectNames">
+            <summary>
+            Gets the SqlObjectNames.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.SqlDbMetadata">
+            <summary>
+            Gets the SqlDbMetadata.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.#ctor(Dotmim.Sync.SyncTable,Dotmim.Sync.ScopeInfo)">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder" />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetParsedColumnNames(Dotmim.Sync.SyncColumn)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetParsedTableNames">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetParsedTrackingTableNames">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetCreateSchemaCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetCreateTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetExistsTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetExistsSchemaCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetDropTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetExistsColumnCommandAsync(System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetAddColumnCommandAsync(System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetDropColumnCommandAsync(System.String,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetColumnsAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetRelationsAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetPrimaryKeysAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetExistsStoredProcedureCommandAsync(Dotmim.Sync.Builders.DbStoredProcedureType,Dotmim.Sync.SyncFilter,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetCreateStoredProcedureCommandAsync(Dotmim.Sync.Builders.DbStoredProcedureType,Dotmim.Sync.SyncFilter,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetDropStoredProcedureCommandAsync(Dotmim.Sync.Builders.DbStoredProcedureType,Dotmim.Sync.SyncFilter,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetCreateTrackingTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetDropTrackingTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetExistsTrackingTableCommandAsync(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetExistsTriggerCommandAsync(Dotmim.Sync.Builders.DbTriggerType,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetCreateTriggerCommandAsync(Dotmim.Sync.Builders.DbTriggerType,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlTableBuilder.GetDropTriggerCommandAsync(Dotmim.Sync.Builders.DbTriggerType,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter">
+            <summary>
+            Sql Server Sync Adapter.
+            </summary>
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.ExecuteBatchCommandAsync(Dotmim.Sync.SyncContext,System.Data.Common.DbCommand,System.Guid,System.Collections.Generic.IEnumerable{Dotmim.Sync.SyncRow},Dotmim.Sync.SyncTable,Dotmim.Sync.SyncTable,System.Nullable{System.Int64},System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <summary>
+            Executing a batch command.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.SqlObjectNames">
+            <summary>
+            Gets the SqlObjectNames.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.SqlMetadata">
+            <summary>
+            Gets the SqlDbMetadata.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.#ctor(Dotmim.Sync.SyncTable,Dotmim.Sync.ScopeInfo,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.GetParsedColumnNames(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.GetTableBuilder">
+            <summary>
+            Get the table builder. Table builder builds table, stored procedures and triggers.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.GetCommand(Dotmim.Sync.SyncContext,Dotmim.Sync.Builders.DbCommandType,Dotmim.Sync.SyncFilter)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.AddCommandParameterValue(Dotmim.Sync.SyncContext,System.Data.Common.DbParameter,System.Object,System.Data.Common.DbCommand,Dotmim.Sync.Builders.DbCommandType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.EnsureCommandParameters(Dotmim.Sync.SyncContext,System.Data.Common.DbCommand,Dotmim.Sync.Builders.DbCommandType,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,Dotmim.Sync.SyncFilter)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.EnsureCommandParametersValues(Dotmim.Sync.SyncContext,System.Data.Common.DbCommand,Dotmim.Sync.Builders.DbCommandType,System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Builders.SqlSyncAdapter.GetParameter(Dotmim.Sync.SyncContext,System.Data.Common.DbCommand,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata">
+            <summary>
+            SqlDbMetadata class is a helper to get information about tables and columns from a SqlConnection.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata"/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.CoercePrecisionAndScale(System.Int32,System.Int32)">
+            <summary>
+            Check precision and scale.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetDbType(Dotmim.Sync.SyncColumn)">
+            <summary>
+            Gets the DbType issue from the database.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetOwnerDbType(Dotmim.Sync.SyncColumn)">
+            <summary>
+            Gets the SqlDbType issued from the database.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetSqlDbType(Dotmim.Sync.SyncColumn)">
+            <summary>
+            Gets the SqlDbType issued from the database.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetOwnerDbTypeFromDbType(Dotmim.Sync.SyncColumn)">
+            <summary>
+            Gets the SqlDbType issued from the downgraded DbType.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetType(Dotmim.Sync.SyncColumn)">
+            <summary>
+            Gets a managed type from a SqlDbType.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetMaxLength(Dotmim.Sync.SyncColumn)">
+            <summary>
+            Gets the max length autorized.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetPrecisionAndScale(Dotmim.Sync.SyncColumn)">
+            <summary>
+            Returns a tuple containing precision and scale for a sync column.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetPrecision(Dotmim.Sync.SyncColumn)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.IsSupportingScale(Dotmim.Sync.SyncColumn)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.IsNumericType(Dotmim.Sync.SyncColumn)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.IsValid(Dotmim.Sync.SyncColumn)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.IsReadonly(Dotmim.Sync.SyncColumn)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetCompatibleColumnTypeDeclarationString(Dotmim.Sync.SyncColumn,System.String)">
+            <summary>
+            Gets a compatible column definition, like nvarchar(50), int, decimal(8,2).
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetCompatibleColumnPrecisionAndScale(Dotmim.Sync.SyncColumn,System.String)">
+            <summary>
+            Gets a compatible precision and scale.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Manager.SqlDbMetadata.GetCompatibleMaxLength(Dotmim.Sync.SyncColumn,System.String)">
+            <summary>
+            Gets a compatible max length.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder">
+            <summary>
+            Sql scope builder for Sql Server.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.ScopeInfoTableNames">
+            <summary>
+            Gets the scope info table names.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.ScopeInfoClientTableNames">
+            <summary>
+            Gets the scope info client table names.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.#ctor(System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder"/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetParsedScopeInfoTableNames">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetParsedScopeInfoClientTableNames">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetLocalTimestampCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetExistsScopeInfoTableCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetExistsScopeInfoClientTableCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetCreateScopeInfoTableCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetCreateScopeInfoClientTableCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetAllScopeInfosCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetAllScopeInfoClientsCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetScopeInfoCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetScopeInfoClientCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetInsertScopeInfoCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetInsertScopeInfoClientCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetUpdateScopeInfoCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetUpdateScopeInfoClientCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetDeleteScopeInfoCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetDeleteScopeInfoClientCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetDropScopeInfoTableCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetDropScopeInfoClientTableCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetExistsScopeInfoCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.Scope.SqlScopeBuilder.GetExistsScopeInfoClientCommand(System.Data.Common.DbConnection,System.Data.Common.DbTransaction)">
+            <inheritdoc />
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.SqlExtensionsMethods">
+            <summary>
+            Sql Extensions Methods.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.SqlManagementUtils">
+            <summary>
+            Sql Management Utils.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetAllTablesAsync(Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Get all Tables.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetTableDefinitionAsync(System.String,System.String,Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Get Table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetTableAsync(System.String,System.String,Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Get Table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.RenameTableAsync(System.String,System.String,System.String,System.String,Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Rename Table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetTriggerAsync(System.String,System.String,Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Get Table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetColumnsForTableAsync(System.String,System.String,Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Get columns for table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetPrimaryKeysForTableAsync(System.String,System.String,Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Get columns for table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetRelationsForTableAsync(Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction,System.String,System.String)">
+            <summary>
+            Get relations for table.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.DropTableIfExistsAsync(System.String,System.String,Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Drop Table if exists.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetUnquotedSqlSchemaName(Dotmim.Sync.DatabaseStringParsers.TableParser)">
+            <summary>
+            Gets the quoted table schema. if empty, return dbo.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetUnquotedSqlSchemaName(Dotmim.Sync.DatabaseStringParsers.ObjectParser)">
+            <summary>
+            Gets the quoted table schema. if empty, return dbo.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.IsChangeTrackingEnabledAsync(Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Gets if change tracking is enabled on the database.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.GetHelloAsync(Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Gets if SQL Server is reachable by trying a simple query on the server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.DatabaseExistsAsync(Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Check if a database exists.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.ProcedureExistsAsync(Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction,System.String,System.String)">
+            <summary>
+            Check if a stored procedure exists.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.TableExistsAsync(System.String,System.String,Microsoft.Data.SqlClient.SqlConnection,Microsoft.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Check if a table exists.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.JoinTwoTablesOnClause(System.Collections.Generic.IEnumerable{System.String},System.String,System.String)">
+            <summary>
+            Returns a join clause for two tables on their primary keys.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlManagementUtils.ColumnsAndParameters(System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Returns an equality clause for two tables on columns = parameters.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.SqlServerTransientExceptionDetector">
+            <summary>
+                Detects the exceptions caused by SQL Server transient failures.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlServerTransientExceptionDetector.ShouldRetryOn(System.Exception)">
+            <summary>
+                Detects the exceptions caused by SQL Server transient failures.
+            </summary>
+        </member>
+        <member name="T:Dotmim.Sync.SqlServer.SqlSyncProvider">
+            <summary>
+            SqlSyncProvider provider for Sql Server.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.#ctor">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.SqlSyncProvider" />
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.SqlSyncProvider.ProviderType">
+            <summary>
+            Gets the provider type.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.SqlSyncProvider.ShortProviderType">
+            <summary>
+            Gets the short provider type.
+            </summary>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.SqlSyncProvider.ConnectionString">
+            <summary>
+            Gets or sets the sql connection string.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.#ctor(System.String)">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.SqlSyncProvider"/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.#ctor(Microsoft.Data.SqlClient.SqlConnectionStringBuilder)">
+            <inheritdoc cref="T:Dotmim.Sync.SqlServer.SqlSyncProvider"/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.CreateConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.GetProviderTypeName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.SqlSyncProvider.DefaultSchemaName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.SqlSyncProvider.ConstraintsLevelAction">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.GetShortProviderTypeName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.GetDatabaseName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.GetMetadata">
+            <summary>
+            Gets or sets the Metadata object which parse Sql server types.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.ShouldRetryOn(System.Exception)">
+            <summary>
+            Gets a chance to make a retry connection.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.EnsureSyncException(Dotmim.Sync.SyncException)">
+            <inheritdoc/>
+        </member>
+        <member name="P:Dotmim.Sync.SqlServer.SqlSyncProvider.CanBeServerProvider">
+            <summary>
+            Gets a value indicating whether sql Server supports to be a server side provider.
+            </summary>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.GetScopeBuilder(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.GetSyncAdapter(Dotmim.Sync.SyncTable,Dotmim.Sync.ScopeInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Dotmim.Sync.SqlServer.SqlSyncProvider.GetDatabaseBuilder">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

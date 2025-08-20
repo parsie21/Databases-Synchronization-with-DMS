@@ -9,13 +9,15 @@ namespace SyncServer
     /// </summary>
     public class Startup
     {
-
+        #region Campi
         /// <summary>
         /// Oggetto di configurazione che fornisce accesso alle impostazioni dell'applicazione,
         /// come stringhe di connessione e parametri definiti in appsettings.json.
         /// </summary>
         public IConfiguration Configuration { get; }
+        #endregion
 
+        #region Costruttore
         /// <summary>
         /// Costruttore della classe Startup.
         /// Inizializza la configurazione dell'applicazione.
@@ -25,7 +27,9 @@ namespace SyncServer
         {
             this.Configuration = configuration;
         }
+        #endregion
 
+        #region Metodi
         /// <summary>
         /// Metodo chiamato all'avvio per registrare i servizi necessari nell'IoC container.
         /// Qui si aggiungono servizi come Dotmim.Sync, sessioni, controller, cache, ecc.
@@ -36,12 +40,19 @@ namespace SyncServer
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddControllers();
+            // aggiungere autenticazione
+            // aggiungere autorizzazione
 
-
-            var tables = new string[] { "SalesLT.ProductCategory", "SalesLT.Product", "SalesLT.Address", "SalesLT.Customer", "SalesLT.CustomerAddress" };
+            var tables = Configuration.GetSection("Sync:Tables_AdventureWorks").Get<string[]>();
             var setup = new SyncSetup(tables);
-            var options = new SyncOptions { BatchSize = 2000, DbCommandTimeout = 300 };
+            var options = new SyncOptions
+            {
+                BatchSize = 2000,
+                DbCommandTimeout = 300,
+                ConflictResolutionPolicy = Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ClientWins
+            };
             var provider = new SqlSyncChangeTrackingProvider(Configuration.GetConnectionString("ServerDb"));
+
 
             services.AddSyncServer(provider, setup, options);
         }
@@ -59,20 +70,15 @@ namespace SyncServer
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
+            app.UseHttpsRedirection();
             app.UseSession();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapGet("/", context =>
-                {
-                    context.Response.ContentType = "text/plain";
-                    return context.Response.WriteAsync("Dotmim.Sync Server up");
-                });
             });
         }
-
-
+        #endregion
     }
 }

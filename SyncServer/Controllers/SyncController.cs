@@ -11,8 +11,11 @@ namespace SyncServer.Controllers
     [Route("api/[controller]")]
     public class SyncController : Controller
     {
+        #region Campi
         private readonly WebServerAgent _agent;
+        #endregion
 
+        #region Costruttore
         /// <summary>
         /// Costruttore che riceve il WebServerAgent tramite dependency injection.
         /// </summary>
@@ -21,7 +24,9 @@ namespace SyncServer.Controllers
         {
             this._agent = agent;
         }
+        #endregion
 
+        #region Metodi
         /// <summary>
         /// Endpoint POST per la sincronizzazione dei dati.
         /// Riceve la richiesta dal client e la processa tramite Dotmim.Sync.
@@ -51,5 +56,6 @@ namespace SyncServer.Controllers
             return new EmptyResult();
             
         }
+        #endregion
     }
 }

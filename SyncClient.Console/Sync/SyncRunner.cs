@@ -1,4 +1,5 @@
 ﻿using Dotmim.Sync;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -43,6 +44,7 @@ namespace SyncClient.Sync
             _agent = agent ?? throw new ArgumentNullException(nameof(agent));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _delayMs = delayMs;
+
         }
 
         #endregion

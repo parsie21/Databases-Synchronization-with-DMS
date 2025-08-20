@@ -3,6 +3,6 @@
     "ClientDb": "Server=localhost,14331;Database=AdventureWorks;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True"
   },
   "Sync": {
-    "ServiceUrl": "http://localhost:5201/api/sync"
+    "ServiceUrl": "https://localhost:5201/api/sync"
   }
 }

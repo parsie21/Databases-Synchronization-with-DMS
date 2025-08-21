@@ -1,4 +1,6 @@
 ﻿using Dotmim.Sync;
+using Dotmim.Sync.SqlServer;
+using Dotmim.Sync.Web.Client;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,56 +16,43 @@ namespace SyncClient.Sync
     {
         #region Fields
 
-        /// <summary>
-        /// The Dotmim.Sync agent responsible for synchronization.
-        /// </summary>
-        private readonly SyncAgent _agent;
-
-        /// <summary>
-        /// Logger for synchronization events and errors.
-        /// </summary>
+        private readonly string _clientConn;
+        private readonly Uri _serviceUrl;
         private readonly ILogger _logger;
-
-        /// <summary>
-        /// Delay in milliseconds between synchronization cycles.
-        /// </summary>
         private readonly int _delayMs;
 
         #endregion
 
         #region Constructor
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="SyncRunner"/>.
-        /// </summary>
-        /// <param name="agent">The Dotmim.Sync SyncAgent instance.</param>
-        /// <param name="logger">Logger for synchronization events.</param>
-        /// <param name="delayMs">Delay in milliseconds between sync cycles (default: 30000 ms).</param>
-        public SyncRunner(SyncAgent agent, ILogger logger, int delayMs = 30000)
+        
+        public SyncRunner (string clientConn, Uri serviceUrl, ILogger logger, int delayMs = 30000)
         {
-            _agent = agent ?? throw new ArgumentNullException(nameof(agent));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _delayMs = delayMs;
-
+            this._clientConn = clientConn ?? throw new ArgumentNullException(nameof(clientConn)); ;
+            this._serviceUrl = serviceUrl ?? throw new ArgumentNullException(nameof(serviceUrl)); ;
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._delayMs = delayMs;
         }
-
         #endregion
 
         #region Methods
 
-        /// <summary>
-        /// Starts the synchronization loop.
-        /// Runs indefinitely, performing sync cycles and logging results.
-        /// </summary>
+       
         public async Task RunAsync()
         {
             while (true)
             {
                 try
                 {
+                    _logger.LogInformation("------------------------------------------");
                     _logger.LogInformation("Starting synchronization...");
+
+                    var localProvider = new SqlSyncChangeTrackingProvider(_clientConn);
+                    var remoteOrchestrator = new WebRemoteOrchestrator(_serviceUrl);
+                    var agent = new SyncAgent(localProvider, remoteOrchestrator);
+
                     var syncStart = DateTime.Now;
-                    var summary = await _agent.SynchronizeAsync();
+                    var summary = await agent.SynchronizeAsync();
                     var syncEnd = DateTime.Now;
 
                     _logger.LogInformation("--- SYNC SUMMARY ---");
@@ -73,8 +62,9 @@ namespace SyncClient.Sync
                     _logger.LogInformation("Duration:                 {Duration}s", (syncEnd - syncStart).TotalSeconds);
 
                     // Log a warning if no changes were applied
-                    if (summary.TotalChangesAppliedOnClient == 0 && summary.TotalChangesAppliedOnServer == 0)
-                        _logger.LogWarning("No changes applied during synchronization.");
+                    if (summary.TotalChangesAppliedOnClient == 0 && summary.TotalChangesAppliedOnServer == 0) _logger.LogWarning("No changes applied during synchronization.");
+                    _logger.LogInformation("------------------------------------------");
+
                 }
                 catch (Exception ex)
                 {

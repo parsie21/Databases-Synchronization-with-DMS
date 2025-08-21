@@ -38,7 +38,7 @@ namespace SyncClient
 
                 var clientConnBuilder = new SqlConnectionStringBuilder(config.GetConnectionString("ClientDb"))
                 {
-                    ConnectTimeout = 120
+                    ConnectTimeout = 180
                 };
                 var clientConn = clientConnBuilder.ConnectionString;
 
@@ -49,14 +49,9 @@ namespace SyncClient
                 var serviceUrl = new Uri(serviceUrlString);
                 #endregion
 
-                #region Provider and Agent
-                var localProvider = new SqlSyncChangeTrackingProvider(clientConn);
-                var remoteOrchestrator = new WebRemoteOrchestrator(serviceUrl);
-                var agent = new SyncAgent(localProvider, remoteOrchestrator);
-                #endregion
 
                 #region Synchronization Runner
-                var syncRunner = new SyncRunner(agent, syncLogger, 30000);
+                var syncRunner = new SyncRunner(clientConn, serviceUrl, syncLogger, 50000);
                 await syncRunner.RunAsync();
                 #endregion
             }

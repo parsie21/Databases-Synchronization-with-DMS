@@ -19,4 +19,20 @@ for s in "${servers[@]}"; do
     echo "Database restored on $s."
 done
 
+for s in "${servers[@]}"; do
+    echo "Waiting for database TERRADISIENA to be online on $s..."
+    until /opt/mssql-tools/bin/sqlcmd -S "$s" -U sa -P "$SA_PASSWORD" -d TERRADISIENA -Q "SELECT 1" >/dev/null 2>&1; do
+        sleep 2
+    done
+done
+
 echo "All databases restored successfully."
+
+# Attendi che il database TERRADISIENA sia online su ogni istanza
+for s in "${servers[@]}"; do
+    echo "Waiting for database TERRADISIENA to be online on $s..."
+    until /opt/mssql-tools/bin/sqlcmd -S "$s" -U sa -P "$SA_PASSWORD" -d TERRADISIENA -Q "SELECT 1" >/dev/null 2>&1; do
+        sleep 2
+    done
+    echo "Database TERRADISIENA is online on $s."
+done

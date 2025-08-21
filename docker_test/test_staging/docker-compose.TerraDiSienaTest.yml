@@ -1,6 +1,4 @@
 services:
-
-#-----------------------------------------------------------#
   central-db-TDS:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: central-db-TDS
@@ -13,9 +11,13 @@ services:
     volumes:
       - central_data_staging:/var/opt/mssql
       - ./init:/var/opt/mssql/backup
-    networks:
-      - syncnet
-
+    networks: [syncnet]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/1433'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
   client1-db-TDS:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -29,8 +31,13 @@ services:
     volumes:
       - client1_data_staging:/var/opt/mssql
       - ./init:/var/opt/mssql/backup
-    networks:
-      - syncnet
+    networks: [syncnet]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/1433'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
   client2-db-TDS:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -44,8 +51,13 @@ services:
     volumes:
       - client2_data_staging:/var/opt/mssql
       - ./init:/var/opt/mssql/backup
-    networks:
-      - syncnet
+    networks: [syncnet]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/1433'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
   client3-db-TDS:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -59,79 +71,99 @@ services:
     volumes:
       - client3_data_staging:/var/opt/mssql
       - ./init:/var/opt/mssql/backup
-    networks:
-      - syncnet
+    networks: [syncnet]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/1433'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
-#-----------------------------------------------------------#
-
-  init:
+  init-TDS:
     image: mcr.microsoft.com/mssql-tools
     container_name: init-TDS
     depends_on:
-      - central-db-TDS
-      - client1-db-TDS
-      - client2-db-TDS
-      - client3-db-TDS
+      central-db-TDS:
+        condition: service_healthy
+      client1-db-TDS:
+        condition: service_healthy
+      client2-db-TDS:
+        condition: service_healthy
+      client3-db-TDS:
+        condition: service_healthy
     environment:
       - SA_PASSWORD=Terya12345!
     volumes:
       - ./init:/init:ro
     entrypoint: ["bash","-lc","tr -d '\r' </init/init.sh >/tmp/init.sh && bash /tmp/init.sh"]
-    networks:
-      - syncnet
+    networks: [syncnet]
+    restart: "no"
 
   syncserver-TDS:
     build: ../../SyncServer
     image: syncserver-tds:latest
     container_name: syncserver-TDS
     depends_on:
-      - central-db-TDS
+      central-db-TDS:
+        condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__ServerDb=Server=central-db-TDS,1433;Database=TerraDiSiena;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
+      - ConnectionStrings__ServerDb=Server=central-db-TDS,1433;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
     ports:
       - "5201:8080"
-    networks:
-      - syncnet
+    networks: [syncnet]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8080'"]
+      interval: 5s
+      timeout: 3s
+      retries: 60
 
   syncclient1-TDS:
     build: ../../SyncClient
     image: syncclient1-tds:latest
     container_name: syncclient1-TDS
     depends_on:
-      - client1-db-TDS
-      - syncserver-TDS
+      client1-db-TDS:
+        condition: service_healthy
+      syncserver-TDS:
+        condition: service_healthy
     environment:
-      - ConnectionStrings__ClientDb=Server=client1-db-TDS,1433;Database=TerraDiSiena;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True
+      - ConnectionStrings__ClientDb=Server=client1-db-TDS,1433;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
       - Sync__ServiceUrl=http://syncserver-TDS:8080/api/sync
-    networks:
-      - syncnet
+    networks: [syncnet]
+    restart: unless-stopped
 
   syncclient2-TDS:
     build: ../../SyncClient
     image: syncclient2-tds:latest
     container_name: syncclient2-TDS
     depends_on:
-      - client2-db-TDS
-      - syncserver-TDS
+      client2-db-TDS:
+        condition: service_healthy
+      syncserver-TDS:
+        condition: service_healthy
     environment:
-      - ConnectionStrings__ClientDb=Server=client2-db-TDS,1433;Database=TerraDiSiena;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True
+      - ConnectionStrings__ClientDb=Server=client2-db-TDS,1433;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
       - Sync__ServiceUrl=http://syncserver-TDS:8080/api/sync
-    networks:
-      - syncnet
+    networks: [syncnet]
+    restart: unless-stopped
 
   syncclient3-TDS:
     build: ../../SyncClient
     image: syncclient3-tds:latest
     container_name: syncclient3-TDS
     depends_on:
-      - client3-db-TDS
-      - syncserver-TDS
+      client3-db-TDS:
+        condition: service_healthy
+      syncserver-TDS:
+        condition: service_healthy
     environment:
-      - ConnectionStrings__ClientDb=Server=client3-db-TDS,1433;Database=TerraDiSiena;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True
+      - ConnectionStrings__ClientDb=Server=client3-db-TDS,1433;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
       - Sync__ServiceUrl=http://syncserver-TDS:8080/api/sync
-    networks:
-      - syncnet
+    networks: [syncnet]
+    restart: unless-stopped
 
 
 

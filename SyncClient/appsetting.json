@@ -1,8 +1,10 @@
 ﻿{
   "ConnectionStrings": {
-    "ClientDb": "Server=localhost,14331;Database=AdventureWorks;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True"
+    "ClientDb": "Server=localhost,14331;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True",
+    "ClientDb_AdventureWorks": "Server=localhost,14331;Database=AdventureWorks;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True",
+    "ClientDb_TerraDiSiena": "Server=localhost,14331;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True"
   },
   "Sync": {
-    "ServiceUrl": "https://localhost:5201/api/sync"
+    "ServiceUrl": "http://localhost:5201/api/sync"
   }
 }

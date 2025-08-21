@@ -32,7 +32,7 @@ namespace SyncClient.Console.Configuration
             */
             _config = new ConfigurationBuilder()
                 .AddJsonFile(jsonFile)
-                .AddEnvironmentVariables()
+                .AddEnvironmentVariables() // Utile per docker 
                 .Build();
             _logger = logger;
         }

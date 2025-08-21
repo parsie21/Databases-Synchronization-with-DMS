@@ -43,11 +43,11 @@ namespace SyncServer
             // aggiungere autenticazione
             // aggiungere autorizzazione
 
-            var tables = Configuration.GetSection("Sync:Tables_AdventureWorks").Get<string[]>();
+            var tables = Configuration.GetSection("Sync:Tables_Negozio").Get<string[]>();
             var setup = new SyncSetup(tables);
             var options = new SyncOptions
             {
-                BatchSize = 2000,
+                BatchSize = 800,
                 DbCommandTimeout = 300,
                 ConflictResolutionPolicy = Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ClientWins
             };
@@ -70,7 +70,7 @@ namespace SyncServer
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
-            app.UseHttpsRedirection();
+            
             app.UseSession();
             app.UseRouting();
 

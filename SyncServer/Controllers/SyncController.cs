@@ -39,22 +39,30 @@ namespace SyncServer.Controllers
             var startTime = DateTime.Now;
             var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            await _agent.HandleRequestAsync(HttpContext);
-
-            // Scrivi i log solo se la richiesta non è una chiamata interna Dotmim.Sync (esempio: solo se non è una richiesta batch)
-            if (!Request.Headers.ContainsKey("dotmim-sync-batch"))
+            try
             {
-                var endTime = DateTime.Now;
-                Console.WriteLine("--- SYNC INFO ---");
-                Console.WriteLine($"Richiesta da: {clientIp}");
-                Console.WriteLine($"Inizio sync:  {startTime}");
-                Console.WriteLine($"Fine sync:    {endTime}");
-                Console.WriteLine($"Durata:       {(endTime - startTime).TotalSeconds} secondi");
-                Console.WriteLine($"Sincronizzazione completata: {DateTime.Now}");
+                await _agent.HandleRequestAsync(HttpContext);
+
+                // Scrivi i log solo se la richiesta non è una chiamata interna Dotmim.Sync (esempio: solo se non è una richiesta batch)
+                if (!Request.Headers.ContainsKey("dotmim-sync-batch"))
+                {
+                    var endTime = DateTime.Now;
+                    Console.WriteLine("--- SYNC INFO ---");
+                    Console.WriteLine($"Richiesta da: {clientIp}");
+                    Console.WriteLine($"Inizio sync:  {startTime}");
+                    Console.WriteLine($"Fine sync:    {endTime}");
+                    Console.WriteLine($"Durata:       {(endTime - startTime).TotalSeconds} secondi");
+                    Console.WriteLine($"Sincronizzazione completata: {DateTime.Now}");
+                }
             }
-   
+            catch (Exception ex)
+            {
+                Console.WriteLine("--- SYNC ERROR ---");
+                Console.WriteLine($"Richiesta da: {clientIp}");
+                Console.WriteLine($"Errore: {ex}");
+            }
+
             return new EmptyResult();
-            
         }
         #endregion
     }

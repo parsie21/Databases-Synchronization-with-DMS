@@ -15,6 +15,7 @@ namespace SyncServer
         /// come stringhe di connessione e parametri definiti in appsettings.json.
         /// </summary>
         public IConfiguration Configuration { get; }
+        public readonly ILogger<Startup> logger;
         #endregion
 
         #region Costruttore
@@ -44,12 +45,26 @@ namespace SyncServer
             // aggiungere autorizzazione
 
             var tables = Configuration.GetSection("Sync:Tables_Negozio").Get<string[]>();
+
+            // Log delle tabelle da sincronizzare
+            if (tables != null && tables.Length > 0)
+            {
+                logger?.LogInformation("Tabelle da sincronizzare: {Tables}", string.Join(", ", tables));
+            }
+            else
+            {
+                logger?.LogWarning("Nessuna tabella configurata per la sincronizzazione!");
+            }
+               
+           
+
             var setup = new SyncSetup(tables);
             var options = new SyncOptions
             {
                 BatchSize = 800,
                 DbCommandTimeout = 300,
-                ConflictResolutionPolicy = Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ClientWins
+                ConflictResolutionPolicy = Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ClientWins,
+                
             };
             var provider = new SqlSyncChangeTrackingProvider(Configuration.GetConnectionString("ServerDb"));
 

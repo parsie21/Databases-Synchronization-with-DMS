@@ -106,7 +106,7 @@ namespace SyncClient.Sync
                 }
 
                 // Attende prima di ripetere la sincronizzazione
-                await Task.Delay(_delayMs);
+                await Task.Delay(millisecondsDelay: _delayMs);
             }
         }
 

@@ -78,6 +78,7 @@ namespace SyncClient.Sync
                     // Crea i provider Dotmim.Sync per client e server
                     var localProvider = new SqlSyncChangeTrackingProvider(_clientConn);
                     var remoteOrchestrator = new WebRemoteOrchestrator(_serviceUrl);
+                    remoteOrchestrator.HttpClient.Timeout = TimeSpan.FromMinutes(20);
                     var agent = new SyncAgent(localProvider, remoteOrchestrator);
 
                     // Esegue la sincronizzazione e misura la durata

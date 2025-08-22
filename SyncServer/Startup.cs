@@ -45,11 +45,22 @@ namespace SyncServer
 
             var tables = Configuration.GetSection("Sync:Tables_Negozio").Get<string[]>();
             var setup = new SyncSetup(tables);
+
+            // parametri di configurazione di syncOptions da appsetting
+            var syncOptionsSection = Configuration.GetSection("SyncOptions");
+            var batchSize = syncOptionsSection.GetValue<int>("BatchSize", 800);
+            var dbCommandTimeout = syncOptionsSection.GetValue<int>("DbCommandTimeout", 300);
+            var conflictPolicyStr = syncOptionsSection.GetValue<string>("ConflictResolutionPolicy", "ClientWins");
+            var conflictPolicy = conflictPolicyStr == "ServerWins"
+                ? Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ServerWins
+                : Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ClientWins;
+
+
             var options = new SyncOptions
             {
-                BatchSize = 800,
-                DbCommandTimeout = 300,
-                ConflictResolutionPolicy = Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ClientWins,
+                BatchSize = batchSize,
+                DbCommandTimeout = dbCommandTimeout,
+                ConflictResolutionPolicy = conflictPolicy
             };
             var provider = new SqlSyncChangeTrackingProvider(Configuration.GetConnectionString("ServerDb"));
 

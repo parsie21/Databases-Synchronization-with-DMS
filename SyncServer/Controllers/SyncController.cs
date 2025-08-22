@@ -13,16 +13,19 @@ namespace SyncServer.Controllers
     {
         #region Campi
         private readonly WebServerAgent _agent;
+        private readonly ILogger<SyncController> _logger;
         #endregion
 
         #region Costruttore
         /// <summary>
-        /// Costruttore che riceve il WebServerAgent tramite dependency injection.
+        /// Costruttore che riceve il WebServerAgent e il logger tramite dependency injection.
         /// </summary>
         /// <param name="agent">Istanza di WebServerAgent fornita dai servizi.</param>
-        public SyncController(WebServerAgent agent)
+        /// <param name="logger">Istanza di ILogger per la registrazione dei log.</param>
+        public SyncController(WebServerAgent agent, ILogger<SyncController> logger)
         {
             this._agent = agent;
+            this._logger = logger;
         }
         #endregion
 
@@ -47,19 +50,19 @@ namespace SyncServer.Controllers
                 if (!Request.Headers.ContainsKey("dotmim-sync-batch"))
                 {
                     var endTime = DateTime.Now;
-                    Console.WriteLine("--- SYNC INFO ---");
-                    Console.WriteLine($"Richiesta da: {clientIp}");
-                    Console.WriteLine($"Inizio sync:  {startTime}");
-                    Console.WriteLine($"Fine sync:    {endTime}");
-                    Console.WriteLine($"Durata:       {(endTime - startTime).TotalSeconds} secondi");
-                    Console.WriteLine($"Sincronizzazione completata: {DateTime.Now}");
+                    _logger.LogInformation("--- SYNC INFO ---");
+                    _logger.LogInformation("Richiesta da: {ClientIp}", clientIp);
+                    _logger.LogInformation("Inizio sync:  {StartTime}", startTime);
+                    _logger.LogInformation("Fine sync:    {EndTime}", endTime);
+                    _logger.LogInformation("Durata:       {Duration}s", (endTime - startTime).TotalSeconds);
+                    _logger.LogInformation("Sincronizzazione completata: {Timestamp}", DateTime.Now);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("--- SYNC ERROR ---");
-                Console.WriteLine($"Richiesta da: {clientIp}");
-                Console.WriteLine($"Errore: {ex}");
+                _logger.LogError(ex, "--- SYNC ERROR ---");
+                _logger.LogError("Richiesta da: {ClientIp}", clientIp);
+                _logger.LogError("Errore: {Error}", ex.Message);
             }
 
             return new EmptyResult();

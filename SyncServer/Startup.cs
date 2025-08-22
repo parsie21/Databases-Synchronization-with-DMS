@@ -15,7 +15,6 @@ namespace SyncServer
         /// come stringhe di connessione e parametri definiti in appsettings.json.
         /// </summary>
         public IConfiguration Configuration { get; }
-        public readonly ILogger<Startup> logger;
         #endregion
 
         #region Costruttore
@@ -45,26 +44,12 @@ namespace SyncServer
             // aggiungere autorizzazione
 
             var tables = Configuration.GetSection("Sync:Tables_Negozio").Get<string[]>();
-
-            // Log delle tabelle da sincronizzare
-            if (tables != null && tables.Length > 0)
-            {
-                logger?.LogInformation("Tabelle da sincronizzare: {Tables}", string.Join(", ", tables));
-            }
-            else
-            {
-                logger?.LogWarning("Nessuna tabella configurata per la sincronizzazione!");
-            }
-               
-           
-
             var setup = new SyncSetup(tables);
             var options = new SyncOptions
             {
                 BatchSize = 800,
                 DbCommandTimeout = 300,
                 ConflictResolutionPolicy = Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ClientWins,
-                
             };
             var provider = new SqlSyncChangeTrackingProvider(Configuration.GetConnectionString("ServerDb"));
 
@@ -80,12 +65,18 @@ namespace SyncServer
         /// </summary>
         /// <param name="app">Oggetto che consente di configurare la pipeline delle richieste.</param>
         /// <param name="env">Informazioni sull'ambiente di hosting (sviluppo, produzione, ecc.).</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
-            
+            // Log delle tabelle da sincronizzare
+            var tables = Configuration.GetSection("Sync:Tables_Negozio").Get<string[]>();
+            if (tables != null && tables.Length > 0)
+                logger.LogInformation("Tabelle da sincronizzare: {Tables}\n", string.Join(",\t\n ", tables));
+            else
+                logger.LogWarning("Nessuna tabella configurata per la sincronizzazione!");
+
             app.UseSession();
             app.UseRouting();
 

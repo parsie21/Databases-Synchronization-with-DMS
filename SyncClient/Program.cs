@@ -21,7 +21,12 @@ namespace SyncClient
             #region Logger Configuration
             var loggerFactory = LoggerFactory.Create(builder =>
             {
-                builder.AddConsole();
+                builder.AddSimpleConsole(options =>
+                {
+                    options.IncludeScopes = true;
+                    options.SingleLine = true;
+                    options.TimestampFormat = "HH:mm:ss ";
+                });
             });
             var configLogger = loggerFactory.CreateLogger<DmsJsonConfiguration>();
             var syncLogger = loggerFactory.CreateLogger<Program>();

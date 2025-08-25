@@ -57,6 +57,18 @@ namespace SyncServer.Controllers
                     _logger.LogInformation("Durata:       {Duration}s", (endTime - startTime).TotalSeconds);
                     _logger.LogInformation("Sincronizzazione completata: {Timestamp}", DateTime.Now);
                 }
+
+
+
+                /*
+                 * 
+                 * LOGGER PER HEADERS
+                _logger.LogInformation("--- REQUEST HEADERS ---");
+                foreach (var header in Request.Headers)
+                {
+                    _logger.LogInformation("{HeaderKey}: {HeaderValue}", header.Key, header.Value);
+                }
+                */
             }
             catch (Exception ex)
             {
@@ -70,3 +82,38 @@ namespace SyncServer.Controllers
         #endregion
     }
 }
+
+
+
+
+/*
+ Host: syncserver-tds:8080
+Accept-Encoding: gzip, deflate
+Content-Type: application/json
+Cookie: .AspNetCore.Session=CfDJ8H7yX0DcqY9OqX60FznPlbt9bCpolF%2FMFvVrpLUcxpG5kRrLh%2FmoWepQcYoNqcSiIKs2WVo%2FlHptD%2B1oA9VjdEnkw4gDFfmmODmJxi1hwKzT31oaZwtUisLhFw5RO4vvTt4s0WBHnyROKI4eNgL8lfmffx8yn0GaqFKh7TJgp%2FXq
+Content-Length: 170
+dotmim-sync-session-id: ca9d808e-659c-4708-99e6-00dd58950f89
+dotmim-sync-scope-id: e237f589-ced4-43ea-8cf3-1ade760ddb3e
+dotmim-sync-scope-name: DefaultScope
+dotmim-sync-step: 11
+dotmim-sync-serialization-format: {"serializerKey":"json","clientBatchSize":0}
+dotmim-sync-version: 1.3.0.0
+dotmim-sync-hash: Tmke02LhMi+ohxCpkezgDkjN3QIF3x+qn18Uf/lLToA=
+*/
+
+
+
+
+/*
+Host: syncserver-tds:8080
+Accept-Encoding: gzip, deflate
+Content-Type: application/json
+Content-Length: 102
+dotmim-sync-session-id: b70957f7-4cb0-4bf7-af57-950aafc9c353
+dotmim-sync-scope-id: 
+dotmim-sync-scope-name: DefaultScope
+dotmim-sync-step: 2
+dotmim-sync-serialization-format: {"serializerKey":"json","clientBatchSize":0}
+dotmim-sync-version: 1.3.0.0
+dotmim-sync-hash: Yfut/i9K85PioEn7F6b4UKpFrOu16VjdVLnhm3C56u0=
+ */

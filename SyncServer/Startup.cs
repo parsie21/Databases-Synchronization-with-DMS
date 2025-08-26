@@ -52,8 +52,20 @@ namespace SyncServer
             // Perform validation checks
             ValidateConfiguration(syncConfig);
 
+            // Try to read connection strings from environment variables first, fallback to appsettings.json
+            var connectionStringDb1 = Environment.GetEnvironmentVariable("PrimaryDatabaseConnectionString") 
+                ?? syncConfig.PrimaryDatabaseConnectionString;
+            var connectionStringDb2 = Environment.GetEnvironmentVariable("SecondaryDatabaseConnectionString") 
+                ?? syncConfig.SecondaryDatabaseConnectionString;
+
+            // Log source of connection strings
+            var logger = services.BuildServiceProvider().GetRequiredService<ILogger<Startup>>();
+            logger.LogInformation("Primary database connection string from: {Source}", 
+                Environment.GetEnvironmentVariable("PrimaryDatabaseConnectionString") != null ? "Environment Variable" : "Configuration File");
+            logger.LogInformation("Secondary database connection string from: {Source}", 
+                Environment.GetEnvironmentVariable("SecondaryDatabaseConnectionString") != null ? "Environment Variable" : "Configuration File");
+
             // Configure synchronization for the primary database
-            var connectionStringDb1 = syncConfig.PrimaryDatabaseConnectionString;
             var tablesDb1 = syncConfig.DatabaseTables["PrimaryDatabase"];
             var optionsDb1 = new SyncOptions
             {
@@ -67,7 +79,6 @@ namespace SyncServer
             services.AddSyncServer(providerDb1, new SyncSetup(tablesDb1), optionsDb1, null, "PrimaryDatabaseScope");
 
             // Configure synchronization for the secondary database
-            var connectionStringDb2 = syncConfig.SecondaryDatabaseConnectionString;
             var tablesDb2 = syncConfig.DatabaseTables["SecondaryDatabase"];
             var optionsDb2 = new SyncOptions
             {

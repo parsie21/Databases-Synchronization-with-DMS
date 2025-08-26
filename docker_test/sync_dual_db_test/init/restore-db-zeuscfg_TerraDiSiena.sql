@@ -1,7 +1,7 @@
 RESTORE DATABASE [ZEUSCFG_TERRADISIENA]
-FROM DISK = 'C:\percorso\al\tuo\backup.bak'
-WITH MOVE 'ZEUSCFG' TO 'C:\percorso\destinazione\ZEUSCFG_TERRADISIENA.mdf',
-     MOVE 'ZEUSCFG_log' TO 'C:\percorso\destinazione\ZEUSCFG_TERRADISIENA_log.ldf',
+FROM DISK = '/var/opt/mssql/backup/zeuscfg_terradisiena.bak'
+WITH MOVE 'ZEUSCFG' TO '/var/opt/mssql/data/ZEUSCFG_TERRADISIENA.mdf',
+     MOVE 'ZEUSCFG_log' TO '/var/opt/mssql/data/ZEUSCFG_TERRADISIENA_log.ldf',
      REPLACE,
      STATS = 5;
 GO

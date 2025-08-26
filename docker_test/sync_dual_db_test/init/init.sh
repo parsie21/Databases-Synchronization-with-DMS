@@ -2,7 +2,7 @@
 set -e 
 echo "SA_PASSWORD=$SA_PASSWORD"
 # List of SQL Server instances (server + 3 clients)
-servers=("central-db-TDS" "client1-db-TDS" "client2-db-TDS" "client3-db-TDS")
+servers=("central-dualdb-TDS" "client1-dualdb-TDS" "client2-dualdb-TDS" "client3-dualdb-TDS")
 
 # Wait for each instance to be ready
 for s in "${servers[@]}"; do

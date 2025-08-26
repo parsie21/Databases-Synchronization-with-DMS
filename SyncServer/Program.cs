@@ -41,6 +41,7 @@ public class Program
         .ConfigureWebHostDefaults(webBuilder =>
         {
             webBuilder.UseStartup<SyncServer.Startup>();
+            webBuilder.UseUrls("http://localhost:5202"); // Cambio porta da 5201 a 5202
         });
 
 

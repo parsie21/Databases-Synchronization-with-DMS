@@ -1,15 +1,8 @@
-﻿using Dotmim.Sync;
-using Dotmim.Sync.SqlServer;
-using Dotmim.Sync.SqlServer.ChangeTracking;
-using Dotmim.Sync.Web.Client;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SyncClient.Console.Configuration;
 using SyncClient.Sync;
 using System;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SyncClient
@@ -24,12 +17,12 @@ namespace SyncClient
         /// Metodo principale asincrono.
         /// 1. Configura il logger.
         /// 2. Carica e valida la configurazione.
-        /// 3. Avvia il runner di sincronizzazione.
+        /// 3. Prepara i dati per il SyncRunner.
         /// 4. Gestisce eventuali errori critici all'avvio.
         /// </summary>
         public static async Task Main()
         {
-            #region Logger Configuration
+            #region Logger Setup
             // Configurazione del logger console con formato semplice e timestamp.
             var loggerFactory = LoggerFactory.Create(builder =>
             {
@@ -40,46 +33,109 @@ namespace SyncClient
                     options.TimestampFormat = "HH:mm:ss ";
                 });
             });
-            // Logger per la configurazione e per la sincronizzazione.
             var configLogger = loggerFactory.CreateLogger<DmsJsonConfiguration>();
             var syncLogger = loggerFactory.CreateLogger<Program>();
             #endregion
-            
+
             try
             {
-                #region Configuration and Validation
+                #region Configuration Loading
                 // Carica la configurazione da file JSON e variabili d'ambiente.
+                syncLogger.LogInformation("Loading configuration from appsetting.json...");
                 var config = new DmsJsonConfiguration("appsetting.json", configLogger);
-
-                // Log di conferma caricamento configurazione e parametri principali.
                 syncLogger.LogInformation("Configuration loaded successfully.");
-                syncLogger.LogInformation("Connection string: {Conn}", config.GetConnectionString("ClientDb"));
-                syncLogger.LogInformation("Service URL: {Url}", config.GetValue("Sync:ServiceUrl"));
-
-                // Costruisce la stringa di connessione SQL con timeout personalizzato.
-                var clientConnBuilder = new SqlConnectionStringBuilder(config.GetConnectionString("ClientDb"))
-                {
-                    ConnectTimeout = 180
-                };
-                var clientConn = clientConnBuilder.ConnectionString;
-
-                // Recupera e valida l'URL del servizio di sincronizzazione.
-                var serviceUrlString = config.GetValue("Sync:ServiceUrl");
-                if (string.IsNullOrWhiteSpace(serviceUrlString))
-                    throw new InvalidOperationException("The 'Sync:ServiceUrl' key is not properly configured.");
-
-                var serviceUrl = new Uri(serviceUrlString);
                 #endregion
 
-                #region Synchronization Runner
-                // Istanzia e avvia il ciclo di sincronizzazione periodica.
-                // Il delay tra le sincronizzazioni è impostato a 50 secondi.
-                var syncRunner = new SyncRunner(clientConn, serviceUrl, syncLogger, 50000);
+                #region Database Connection Strings Extraction
+                // Estrai le stringhe di connessione dai database
+                var primaryDbConn = config.GetValue("LocalDatabases:PrimaryDatabase");
+                var secondaryDbConn = config.GetValue("LocalDatabases:SecondaryDatabase");
+
+                // Verifica che le stringhe di connessione siano state estratte correttamente
+                if (string.IsNullOrEmpty(primaryDbConn))
+                    throw new InvalidOperationException("Primary database connection string is missing or empty.");
+                
+                if (string.IsNullOrEmpty(secondaryDbConn))
+                    throw new InvalidOperationException("Secondary database connection string is missing or empty.");
+                #endregion
+
+                #region Sync Endpoints Extraction
+                // Estrai gli URL dei servizi di sincronizzazione
+                var primaryEndpoint = config.GetValue("SyncEndpoints:PrimaryDatabase");
+                var secondaryEndpoint = config.GetValue("SyncEndpoints:SecondaryDatabase");
+
+                // Verifica che gli endpoint siano stati estratti correttamente
+                if (string.IsNullOrEmpty(primaryEndpoint))
+                    throw new InvalidOperationException("Primary endpoint URL is missing or empty.");
+                
+                if (string.IsNullOrEmpty(secondaryEndpoint))
+                    throw new InvalidOperationException("Secondary endpoint URL is missing or empty.");
+
+                // Converti le stringhe degli endpoint in oggetti Uri
+                var primaryEndpointUri = new Uri(primaryEndpoint);
+                var secondaryEndpointUri = new Uri(secondaryEndpoint);
+                #endregion
+
+                #region Connection Timeout Configuration
+                // Estrai il timeout di connessione
+                int connectionTimeout;
+                try {
+                    var timeoutStr = config.GetValue("ConnectionSettings:ConnectionTimeout");
+                    connectionTimeout = string.IsNullOrEmpty(timeoutStr) ? 180 : int.Parse(timeoutStr);
+                    syncLogger.LogInformation("Connection timeout set to {Timeout} seconds", connectionTimeout);
+                } 
+                catch (Exception ex) {
+                    syncLogger.LogWarning("Failed to parse connection timeout, using default: {Message}", ex.Message);
+                    connectionTimeout = 180;
+                }
+                #endregion
+
+                #region SQL Connection Enhancement
+                // Applica il timeout di connessione alle stringhe di connessione
+                var primaryDbConnBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(primaryDbConn)
+                {
+                    ConnectTimeout = connectionTimeout
+                };
+                var secondaryDbConnBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(secondaryDbConn)
+                {
+                    ConnectTimeout = connectionTimeout
+                };
+
+                // Aggiorna le stringhe di connessione con il timeout configurato
+                primaryDbConn = primaryDbConnBuilder.ConnectionString;
+                secondaryDbConn = secondaryDbConnBuilder.ConnectionString;
+                #endregion
+
+                #region Configuration Verification Logging
+                // Log dei valori estratti per verifica
+                syncLogger.LogInformation("Primary Database Connection: {Connection}", primaryDbConn);
+                syncLogger.LogInformation("Primary Endpoint: {Endpoint}", primaryEndpointUri);
+                syncLogger.LogInformation("Secondary Database Connection: {Connection}", secondaryDbConn);
+                syncLogger.LogInformation("Secondary Endpoint: {Endpoint}", secondaryEndpointUri);
+                #endregion
+
+
+                #region SyncRunner Initialization
+                // A questo punto, abbiamo tutte le informazioni necessarie per creare un SyncRunner
+                syncLogger.LogInformation("Configuration prepared for synchronization of two databases.");
+                syncLogger.LogInformation("Creating SyncRunner instance...");
+
+                // Crea un'istanza di SyncRunner con i dati configurati
+                var syncRunner = new SyncRunner(
+                    primaryDbConn,
+                    primaryEndpointUri,
+                    secondaryDbConn,
+                    secondaryEndpointUri,
+                    syncLogger,
+                    50000  // 50 secondi di delay tra le sincronizzazioni
+                );
+
+                // Avvia il processo di sincronizzazione
+                syncLogger.LogInformation("Starting synchronization process...");
                 await syncRunner.RunAsync();
                 #endregion
             }
-            #region Startup Error Handling
-            // Gestione degli errori critici all'avvio: logga e termina il processo.
+            #region Global Error Handling
             catch (Exception ex)
             {
                 syncLogger.LogCritical(ex, "Fatal error during startup: {Message}", ex.Message);

@@ -1,10 +1,13 @@
 ﻿{
-  "ConnectionStrings": {
-    "ClientDb": "Server=localhost,14331;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True",
-    "ClientDb_AdventureWorks": "Server=localhost,14331;Database=AdventureWorks;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True",
-    "ClientDb_TerraDiSiena": "Server=localhost,14331;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True"
+  "SyncEndpoints": {
+    "PrimaryDatabase": "http://localhost:5202/api/sync/db1",
+    "SecondaryDatabase": "http://localhost:5202/api/sync/db2"
   },
-  "Sync": {
-    "ServiceUrl": "http://localhost:5201/api/sync"
+  "LocalDatabases": {
+    "PrimaryDatabase": "Server=localhost,14331;Database=ZEUSCFG_TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True",
+    "SecondaryDatabase": "Server=localhost,14331;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True"
+  },
+  "ConnectionSettings": {
+    "ConnectionTimeout": 300
   }
 }

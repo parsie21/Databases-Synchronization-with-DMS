@@ -1,46 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SyncServer.Configurations;
 
 namespace SyncServer.Controllers
 {
     /// <summary>
-    /// Controller per fornire informazioni generali sul server di sincronizzazione.
-    /// Espone un endpoint GET che restituisce dati come versione, ambiente e orario.
+    /// Controller for providing general information about the synchronization server.
+    /// Exposes a GET endpoint that returns data such as version, environment, and sync configurations.
     /// </summary>
     [ApiController]
     [Route("api/[Controller]")]
     public class InfoController : ControllerBase
     {
-        // Memorizza l'ora di avvio dell'applicazione
         private static readonly DateTime _startTime = DateTime.Now;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<InfoController> _logger;
+        private readonly SyncConfiguration _syncConfig;
 
-        public InfoController(IConfiguration configuration, ILogger<InfoController> logger)
+        public InfoController(IOptions<SyncConfiguration> syncConfig)
         {
-            _configuration = configuration;
-            _logger = logger;
+            _syncConfig = syncConfig.Value;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            // Lettura parametri SyncOptions
-            var syncOptions = _configuration.GetSection("SyncOptions");
-            var batchSize = syncOptions.GetValue<int>("BatchSize", 800);
-            var dbCommandTimeout = syncOptions.GetValue<int>("DbCommandTimeout", 300);
-            var conflictPolicy = syncOptions.GetValue<string>("ConflictResolutionPolicy", "ClientWins");
-
-            // Lettura tabelle sincronizzate
-            var tables = _configuration.GetSection("Sync:Tables_Negozio").Get<string[]>();
-
-            _logger.LogInformation("Info endpoint called. BatchSize: {BatchSize}, Tables: {Tables}", batchSize, tables);
-
             var info = new
             {
                 server = "Dotmim.Sync Server",
-                // version = typeof(InfoController).Assembly.GetName().Version?.ToString(),
                 environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
                 timestamp = DateTime.Now,
                 uptime = (DateTime.Now - _startTime).ToString(@"dd\.hh\:mm\:ss"),
@@ -48,10 +33,25 @@ namespace SyncServer.Controllers
                 os = Environment.OSVersion.ToString(),
                 dotnet_version = Environment.Version.ToString(),
                 memory_usage_mb = (GC.GetTotalMemory(false) / (1024 * 1024)),
-                batch_size = batchSize,
-                db_command_timeout = dbCommandTimeout,
-                conflict_resolution_policy = conflictPolicy,
-                tables_to_sync = tables
+                sync_options = new
+                {
+                    batch_size = _syncConfig.SyncOptions.BatchSize,
+                    db_command_timeout = _syncConfig.SyncOptions.DbCommandTimeout,
+                    conflict_resolution_policy = _syncConfig.SyncOptions.ConflictResolutionPolicy
+                },
+                databases = new
+                {
+                    PrimaryDatabase = new
+                    {
+                        connection_string = _syncConfig.PrimaryDatabaseConnectionString,
+                        tables_to_sync = _syncConfig.DatabaseTables["PrimaryDatabase"]
+                    },
+                    SecondaryDatabase = new
+                    {
+                        connection_string = _syncConfig.SecondaryDatabaseConnectionString,
+                        tables_to_sync = _syncConfig.DatabaseTables["SecondaryDatabase"]
+                    }
+                }
             };
             return Ok(info);
         }

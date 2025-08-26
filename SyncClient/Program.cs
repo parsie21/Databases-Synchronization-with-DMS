@@ -47,29 +47,47 @@ namespace SyncClient
                 #endregion
 
                 #region Database Connection Strings Extraction
-                // Estrai le stringhe di connessione dai database
-                var primaryDbConn = config.GetValue("LocalDatabases:PrimaryDatabase");
-                var secondaryDbConn = config.GetValue("LocalDatabases:SecondaryDatabase");
+                // Estrai le stringhe di connessione dai database con priorità alle variabili d'ambiente
+                var primaryDbConn = Environment.GetEnvironmentVariable("PrimaryDatabaseConnectionString") 
+                    ?? config.GetValue("LocalDatabases:PrimaryDatabase");
+
+                var secondaryDbConn = Environment.GetEnvironmentVariable("SecondaryDatabaseConnectionString") 
+                    ?? config.GetValue("LocalDatabases:SecondaryDatabase");
 
                 // Verifica che le stringhe di connessione siano state estratte correttamente
                 if (string.IsNullOrEmpty(primaryDbConn))
                     throw new InvalidOperationException("Primary database connection string is missing or empty.");
-                
+
                 if (string.IsNullOrEmpty(secondaryDbConn))
                     throw new InvalidOperationException("Secondary database connection string is missing or empty.");
+
+                // Log dell'origine delle stringhe di connessione
+                syncLogger.LogInformation("Primary database connection from: {Source}", 
+                    Environment.GetEnvironmentVariable("PrimaryDatabaseConnectionString") != null ? "Environment Variable" : "Configuration File");
+                syncLogger.LogInformation("Secondary database connection from: {Source}", 
+                    Environment.GetEnvironmentVariable("SecondaryDatabaseConnectionString") != null ? "Configuration File" : "Environment Variable");
                 #endregion
 
                 #region Sync Endpoints Extraction
-                // Estrai gli URL dei servizi di sincronizzazione
-                var primaryEndpoint = config.GetValue("SyncEndpoints:PrimaryDatabase");
-                var secondaryEndpoint = config.GetValue("SyncEndpoints:SecondaryDatabase");
+                // Estrai gli URL dei servizi di sincronizzazione con priorità alle variabili d'ambiente
+                var primaryEndpoint = Environment.GetEnvironmentVariable("PrimarySyncEndpoint") 
+                    ?? config.GetValue("SyncEndpoints:PrimaryDatabase");
+
+                var secondaryEndpoint = Environment.GetEnvironmentVariable("SecondarySyncEndpoint") 
+                    ?? config.GetValue("SyncEndpoints:SecondaryDatabase");
 
                 // Verifica che gli endpoint siano stati estratti correttamente
                 if (string.IsNullOrEmpty(primaryEndpoint))
                     throw new InvalidOperationException("Primary endpoint URL is missing or empty.");
-                
+
                 if (string.IsNullOrEmpty(secondaryEndpoint))
                     throw new InvalidOperationException("Secondary endpoint URL is missing or empty.");
+
+                // Log dell'origine degli endpoint
+                syncLogger.LogInformation("Primary endpoint from: {Source}", 
+                    Environment.GetEnvironmentVariable("PrimarySyncEndpoint") != null ? "Environment Variable" : "Configuration File");
+                syncLogger.LogInformation("Secondary endpoint from: {Source}", 
+                    Environment.GetEnvironmentVariable("SecondarySyncEndpoint") != null ? "Environment Variable" : "Configuration File");
 
                 // Converti le stringhe degli endpoint in oggetti Uri
                 var primaryEndpointUri = new Uri(primaryEndpoint);

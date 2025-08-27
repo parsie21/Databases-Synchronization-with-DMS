@@ -4,6 +4,7 @@ using Dotmim.Sync.Web.Client;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace SyncClient.Sync
 {
@@ -102,11 +103,11 @@ namespace SyncClient.Sync
 
                     // Sincronizzazione del database primario
                     _logger.LogInformation("Starting synchronization for Primary Database...");
-                    await SynchronizeAsync(_primaryClientConn, _primaryServiceUrl, "Primary Database");
+                    await SynchronizeWithRetryAsync(_primaryClientConn, _primaryServiceUrl, "Primary Database");
 
                     // Sincronizzazione del database secondario
                     _logger.LogInformation("Starting synchronization for Secondary Database...");
-                    await SynchronizeAsync(_secondaryClientConn, _secondaryServiceUrl, "Secondary Database");
+                    await SynchronizeWithRetryAsync(_secondaryClientConn, _secondaryServiceUrl, "Secondary Database");
                     _logger.LogInformation("---------------------------------------------------");
                 }
                 catch (Exception ex)
@@ -154,8 +155,35 @@ namespace SyncClient.Sync
                 _logger.LogInformation("Total changes downloaded: {Downloaded}", summary.TotalChangesAppliedOnClient);
                 _logger.LogInformation("Total changes uploaded:   {Uploaded}", summary.TotalChangesAppliedOnServer);
                 _logger.LogInformation("Conflicts:                {Conflicts}", summary.TotalResolvedConflicts);
-                _logger.LogInformation("Duration:                 {Duration}s", (syncEnd - syncStart).TotalSeconds);
-                
+                var duration = (syncEnd - syncStart).TotalSeconds;
+                _logger.LogInformation("Duration:                 {Duration:F2}s", duration);
+
+                // Additional logging 
+                _logger.LogInformation("---                                ---");
+                _logger.LogInformation("Additional info:");
+
+                // Monitoring sync duration
+                if (duration > 30)
+                {
+                    _logger.LogWarning("Slow Sync detected for {Database}: {Duration:F2}s (Cycle #{Cycle})",
+                        databaseName, duration, _syncCicleCount);
+                }
+                else if (duration > 15)
+                {
+                    _logger.LogWarning("Moderate slow Sync for {Database}: {Duration:F2}s (Cycle #{Cycle})",
+                        databaseName, duration, _syncCicleCount);
+                }
+                else if (duration > 5)
+                {
+                    _logger.LogInformation("Normal Sync duration for {Database}: {Duration:F2}s",
+                        databaseName, duration);
+                }
+                else
+                {
+                    _logger.LogInformation("Fast sync duration for {Database}: {Duration:F2}s",
+                        databaseName, duration);
+                }
+
                 // Avviso se nessuna modifica è stata applicata
                 if (summary.TotalChangesAppliedOnClient == 0 && summary.TotalChangesAppliedOnServer == 0)
                     _logger.LogWarning("No changes applied during synchronization for {DatabaseName}.", databaseName);
@@ -173,6 +201,40 @@ namespace SyncClient.Sync
                 }
             }
         }
+
+        private async Task SynchronizeWithRetryAsync(string clientConn, Uri serviceUrl, string databaseName)
+        {
+            const int maxRetries = 3;
+            const int delayBetweenRetriesMs = 5000;
+
+            for (int attempt=1; attempt<=maxRetries; attempt++)
+            {
+                try
+                {
+                    await SynchronizeAsync(clientConn, serviceUrl, databaseName);
+                    // Log di successo se non è il primo tentativo
+                    if (attempt > 1)
+                    {
+                        _logger.LogInformation("Sync succeeded on attempt {Attempt} for {Database}", attempt, databaseName);
+                    }
+                    return;
+                }
+                catch(Exception ex) when (attempt<maxRetries)
+                {
+                    _logger.LogWarning("Sync attempt {Attempt}/{MaxRetries} failed for {Database}. " +
+                             "Retrying in {Delay}ms. Error: {Error}",
+                             attempt, maxRetries, databaseName, delayBetweenRetriesMs, ex.Message);
+                    await Task.Delay(delayBetweenRetriesMs);
+                }
+                catch(Exception ex) when (attempt >= maxRetries)
+                {
+                    _logger.LogWarning("All {MaxRetries} retry attempts failed for {Database} at cycle #{CycleNumber}. " +
+                           "Error: {Error}", maxRetries, databaseName, _syncCicleCount, ex.Message);
+                    throw;
+                }
+            }
+        }
+
 
         #endregion
     }

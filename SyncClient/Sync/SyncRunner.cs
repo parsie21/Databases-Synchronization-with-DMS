@@ -89,6 +89,7 @@ namespace SyncClient.Sync
             {
                 try
                 {
+                    _logger.LogInformation("---------------------------------------------------");
                     // Sincronizzazione del database primario
                     _logger.LogInformation("Starting synchronization for Primary Database...");
                     await SynchronizeAsync(_primaryClientConn, _primaryServiceUrl, "Primary Database");
@@ -96,6 +97,7 @@ namespace SyncClient.Sync
                     // Sincronizzazione del database secondario
                     _logger.LogInformation("Starting synchronization for Secondary Database...");
                     await SynchronizeAsync(_secondaryClientConn, _secondaryServiceUrl, "Secondary Database");
+                    _logger.LogInformation("---------------------------------------------------");
                 }
                 catch (Exception ex)
                 {
@@ -143,10 +145,11 @@ namespace SyncClient.Sync
                 _logger.LogInformation("Total changes uploaded:   {Uploaded}", summary.TotalChangesAppliedOnServer);
                 _logger.LogInformation("Conflicts:                {Conflicts}", summary.TotalResolvedConflicts);
                 _logger.LogInformation("Duration:                 {Duration}s", (syncEnd - syncStart).TotalSeconds);
-
+                
                 // Avviso se nessuna modifica è stata applicata
                 if (summary.TotalChangesAppliedOnClient == 0 && summary.TotalChangesAppliedOnServer == 0)
                     _logger.LogWarning("No changes applied during synchronization for {DatabaseName}.", databaseName);
+                _logger.LogInformation("\n");
             }
             catch (Exception ex)
             {

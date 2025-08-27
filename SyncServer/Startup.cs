@@ -38,34 +38,43 @@ namespace SyncServer
         /// <param name="services">Collection of services to configure for the application.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add distributed memory cache and session management
+            // TODO: Refactoring - Questo codice ha troppa duplicazione e troppe responsabilità
+            // Idealmente, dovrebbe essere spostato in una classe dedicata come SyncConfigurationService
+            // che gestisca la configurazione, validazione e il setup dei provider di sincronizzazione.
+            #region Add distributed memory cache and session management
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddControllers();
+            #endregion
 
-            // Bind SyncConfiguration from appsettings.json
+            #region Bind SyncConfiguration from appsettings.json
             services.Configure<SyncConfiguration>(Configuration.GetSection("SyncConfiguration"));
+            #endregion
 
-            // Retrieve configuration
+            #region Retrieve configuration
             var syncConfig = Configuration.GetSection("SyncConfiguration").Get<SyncConfiguration>();
+            #endregion
 
-            // Perform validation checks
+            #region Perform validation checks
             ValidateConfiguration(syncConfig);
+            #endregion
 
-            // Try to read connection strings from environment variables first, fallback to appsettings.json
+            #region Try to read connection strings from environment variables first, fallback to appsettings.json
             var connectionStringDb1 = Environment.GetEnvironmentVariable("PrimaryDatabaseConnectionString") 
                 ?? syncConfig.PrimaryDatabaseConnectionString;
             var connectionStringDb2 = Environment.GetEnvironmentVariable("SecondaryDatabaseConnectionString") 
                 ?? syncConfig.SecondaryDatabaseConnectionString;
+            #endregion
 
-            // Log source of connection strings
+            #region Log source of connection strings
             var logger = services.BuildServiceProvider().GetRequiredService<ILogger<Startup>>();
             logger.LogInformation("Primary database connection string from: {Source}", 
                 Environment.GetEnvironmentVariable("PrimaryDatabaseConnectionString") != null ? "Environment Variable" : "Configuration File");
             logger.LogInformation("Secondary database connection string from: {Source}", 
                 Environment.GetEnvironmentVariable("SecondaryDatabaseConnectionString") != null ? "Environment Variable" : "Configuration File");
+            #endregion
 
-            // Configure synchronization for the primary database
+            #region Configure synchronization for the primary database
             var tablesDb1 = syncConfig.DatabaseTables["PrimaryDatabase"];
             var optionsDb1 = new SyncOptions
             {
@@ -77,8 +86,9 @@ namespace SyncServer
             };
             var providerDb1 = new SqlSyncChangeTrackingProvider(connectionStringDb1);
             services.AddSyncServer(providerDb1, new SyncSetup(tablesDb1), optionsDb1, null, "PrimaryDatabaseScope");
-
-            // Configure synchronization for the secondary database
+            #endregion
+            
+            #region Configure synchronization for the secondary database
             var tablesDb2 = syncConfig.DatabaseTables["SecondaryDatabase"];
             var optionsDb2 = new SyncOptions
             {
@@ -90,6 +100,8 @@ namespace SyncServer
             };
             var providerDb2 = new SqlSyncChangeTrackingProvider(connectionStringDb2);
             services.AddSyncServer(providerDb2, new SyncSetup(tablesDb2), optionsDb2, null, "SecondaryDatabaseScope");
+            #endregion
+            
 
         }
 

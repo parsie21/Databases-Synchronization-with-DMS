@@ -46,53 +46,6 @@ namespace SyncServer.Controllers
 
         #region Methods
 
-        /// <summary>
-        /// [Deprecated] Generic endpoint for synchronization.
-        /// This endpoint is no longer recommended and is kept for backward compatibility.
-        /// Use /api/sync/db1 or /api/sync/db2 instead.
-        /// </summary>
-        /// <returns>HTTP response indicating the synchronization status.</returns>
-        /*
-        [HttpPost]
-        [Obsolete("This endpoint is deprecated. Use /api/sync/db1 or /api/sync/db2 instead.")]
-        public async Task<IActionResult> Sync()
-        {
-            var startTime = DateTime.Now;
-            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
-
-            try
-            {
-                await _agent.HandleRequestAsync(HttpContext);
-
-                // Log synchronization details if the request is not a batch request
-                if (!Request.Headers.ContainsKey("dotmim-sync-batch"))
-                {
-                    var endTime = DateTime.Now;
-                    _logger.LogInformation("--- SYNC INFO ---");
-                    _logger.LogInformation("Request from: {ClientIp}", clientIp);
-                    _logger.LogInformation("Sync start:   {StartTime}", startTime);
-                    _logger.LogInformation("Sync end:     {EndTime}", endTime);
-                    _logger.LogInformation("Duration:     {Duration}s", (endTime - startTime).TotalSeconds);
-                    _logger.LogInformation("Sync completed at: {Timestamp}", DateTime.Now);
-                }
-
-                // Log request headers
-                _logger.LogInformation("--- REQUEST HEADERS ---");
-                foreach (var header in Request.Headers)
-                {
-                    _logger.LogInformation("{HeaderKey}: {HeaderValue}", header.Key, header.Value);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "--- SYNC ERROR ---");
-                _logger.LogError("Request from: {ClientIp}", clientIp);
-                _logger.LogError("Error: {Error}", ex.Message);
-            }
-
-            return new EmptyResult();
-        }
-        */
 
         /// <summary>
         /// Endpoint for synchronizing data with DB1.
@@ -196,7 +149,9 @@ namespace SyncServer.Controllers
 
 
 /*
- Host: syncserver-tds:8080
+http header created
+
+Host: syncserver-tds:8080
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
 Cookie: .AspNetCore.Session=CfDJ8H7yX0DcqY9OqX60FznPlbt9bCpolF%2FMFvVrpLUcxpG5kRrLh%2FmoWepQcYoNqcSiIKs2WVo%2FlHptD%2B1oA9VjdEnkw4gDFfmmODmJxi1hwKzT31oaZwtUisLhFw5RO4vvTt4s0WBHnyROKI4eNgL8lfmffx8yn0GaqFKh7TJgp%2FXq

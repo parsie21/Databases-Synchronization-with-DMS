@@ -45,6 +45,11 @@ namespace SyncClient.Sync
         /// </summary>
         private readonly int _delayMs;
 
+        /// <summary>
+        /// Contatore dei cicli di sincronizzazione
+        /// </summary>
+        private int _syncCicleCount;
+
         #endregion
 
         #region Constructor
@@ -72,6 +77,7 @@ namespace SyncClient.Sync
             _secondaryServiceUrl = secondaryServiceUrl ?? throw new ArgumentNullException(nameof(secondaryServiceUrl));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _delayMs = delayMs;
+            _syncCicleCount = 0;
         }
 
         #endregion
@@ -90,6 +96,10 @@ namespace SyncClient.Sync
                 try
                 {
                     _logger.LogInformation("---------------------------------------------------");
+                    
+                    // contatore dei cicli di sync
+                    _logger.LogInformation($"Starting syncronization cycle #{++_syncCicleCount}");
+
                     // Sincronizzazione del database primario
                     _logger.LogInformation("Starting synchronization for Primary Database...");
                     await SynchronizeAsync(_primaryClientConn, _primaryServiceUrl, "Primary Database");
@@ -101,8 +111,8 @@ namespace SyncClient.Sync
                 }
                 catch (Exception ex)
                 {
-                    // Log degli errori generali
-                    _logger.LogError(ex, "An error occurred during synchronization: {Message}", ex.Message);
+                    // Log degli errori generali con numero del ciclo 
+                    _logger.LogError(ex, "Error in synchronization cycle #{CycleNumber}: {Message}",_syncCicleCount, ex.Message);
                 }
 
                 // Attende prima di ripetere la sincronizzazione
@@ -167,3 +177,5 @@ namespace SyncClient.Sync
         #endregion
     }
 }
+
+

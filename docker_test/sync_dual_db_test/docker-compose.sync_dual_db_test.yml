@@ -27,7 +27,7 @@ services:
       - SA_PASSWORD=Terya12345!
       - MSSQL_PID=Express
     ports:
-      - "14331:1433"
+      - "14331:1433"      #"HOST_PORT:CONTAINER_PORT"
     volumes:
       - client1_data_staging:/var/opt/mssql
       - ./init:/var/opt/mssql/backup
@@ -110,13 +110,13 @@ services:
       - PrimaryDatabaseConnectionString=Server=central-dualdb-tds,1433;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
       - SecondaryDatabaseConnectionString=Server=central-dualdb-tds,1433;Database=ZEUSCFG_TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://0.0.0.0:5202
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
     ports:
-      - "5202:5202"
+      - "5202:8080"   #"HOST_PORT:CONTAINER_PORT"
     networks: [syncnet]
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/5202'"]
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8080'"]
       interval: 5s
       timeout: 3s
       retries: 60
@@ -133,8 +133,8 @@ services:
     environment:
       - PrimaryDatabaseConnectionString=Server=client1-dualdb-tds,1433;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
       - SecondaryDatabaseConnectionString=Server=client1-dualdb-tds,1433;Database=ZEUSCFG_TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
-      - PrimarySyncEndpoint=http://syncserver-dualdb-tds:5202/api/sync
-      - SecondarySyncEndpoint=http://syncserver-dualdb-tds:5202/api/sync
+      - PrimarySyncEndpoint=http://syncserver-dualdb-tds:8080/api/sync/db1
+      - SecondarySyncEndpoint=http://syncserver-dualdb-tds:8080/api/sync/db2
     networks: [syncnet]
     restart: unless-stopped
 
@@ -150,8 +150,8 @@ services:
     environment:
       - PrimaryDatabaseConnectionString=Server=client2-dualdb-tds,1433;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
       - SecondaryDatabaseConnectionString=Server=client2-dualdb-tds,1433;Database=ZEUSCFG_TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
-      - PrimarySyncEndpoint=http://syncserver-dualdb-tds:5202/api/sync
-      - SecondarySyncEndpoint=http://syncserver-dualdb-tds:5202/api/sync
+      - PrimarySyncEndpoint=http://syncserver-dualdb-tds:8080/api/sync/db1
+      - SecondarySyncEndpoint=http://syncserver-dualdb-tds:8080/api/sync/db2
     networks: [syncnet]
     restart: unless-stopped
 
@@ -167,8 +167,8 @@ services:
     environment:
       - PrimaryDatabaseConnectionString=Server=client3-dualdb-tds,1433;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
       - SecondaryDatabaseConnectionString=Server=client3-dualdb-tds,1433;Database=ZEUSCFG_TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
-      - PrimarySyncEndpoint=http://syncserver-dualdb-tds:5202/api/sync
-      - SecondarySyncEndpoint=http://syncserver-dualdb-tds:5202/api/sync
+      - PrimarySyncEndpoint=http://syncserver-dualdb-tds:8080/api/sync/db1
+      - SecondarySyncEndpoint=http://syncserver-dualdb-tds:8080/api/sync/db2
     networks: [syncnet]
     restart: unless-stopped
 

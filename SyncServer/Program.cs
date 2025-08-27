@@ -41,76 +41,16 @@ public class Program
         .ConfigureWebHostDefaults(webBuilder =>
         {
             webBuilder.UseStartup<SyncServer.Startup>();
-            webBuilder.UseUrls("http://localhost:5202"); // URL di riferimento dell'API
+            
+            // Controlla l'ambiente
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+            var aspnetCoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+            
+            // Usa URL hardcoded solo se NON siamo in Development O se non è impostata ASPNETCORE_URLS
+            if (environment != "Development" || string.IsNullOrEmpty(aspnetCoreUrls))
+            {
+                webBuilder.UseUrls("http://localhost:5202"); // URL di riferimento dell'API
+            }
+            // Se siamo in Development e ASPNETCORE_URLS è impostata (Docker), usa quella
         });
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
- public static void Main(string[] args)
-    {
-
-
-        var builder = WebApplication.CreateBuilder();
-        builder.Services.AddDistributedMemoryCache();
-        builder.Services.AddSession();
-        
-
-        //Define the sync scope 
-        var setup = new SyncSetup(new string[] { "SalesLT.ProductCategory", "SalesLT.Product",
-                                        "SalesLT.Address", "SalesLT.Customer", "SalesLT.CustomerAddress"});
-        var options = new SyncOptions()
-        {
-            BatchSize = 2000
-        };
-        var provider = new SqlSyncChangeTrackingProvider(builder.Configuration.GetConnectionString("ServerDb"));
-        builder.Services.AddSyncServer(provider, setup, options);
-
-        var app = builder.Build();
-
-        app.UseSession();
-        // Health
-        app.MapGet("/", () => Results.Ok("Dotmim.Sync Server up"));
-
-        // Sync endpoint
-        app.MapPost("/api/sync", async (HttpContext ctx, WebServerAgent agent) =>
-        {
-            await agent.HandleRequestAsync(ctx);
-        });
-
-        app.Run();
-
-    }
- */

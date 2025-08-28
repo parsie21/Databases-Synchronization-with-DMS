@@ -462,14 +462,17 @@ namespace SyncClient.Sync
         }
 
         /// <summary>
-        /// Cleanup sicuro che tocca solo le connessioni della propria applicazione
+        /// Cleanup sicuro con diagnostica prima/dopo
         /// </summary>
         private void SafeConnectionCleanup(string connectionString, string databaseName)
         {
             try
             {
-                _logger.LogInformation("Performing safe connection cleanup for {DatabaseName}...", databaseName);
-
+                _logger.LogInformation("Starting connection cleanup for {DatabaseName}...", databaseName);
+                
+                // NUOVO: Diagnostica PRE-cleanup
+                var preCleanupConnections = GetConnectionCount(connectionString, databaseName);
+                
                 // 1. Cleanup del connection pool solo per questa connection string
                 using var tempConnection = new SqlConnection(connectionString);
                 SqlConnection.ClearPool(tempConnection);
@@ -477,8 +480,15 @@ namespace SyncClient.Sync
                 // 2. Forza garbage collection per rilasciare oggetti .NET non utilizzati
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-
-                _logger.LogInformation("Safe connection cleanup completed for {DatabaseName}", databaseName);
+                
+                // NUOVO: Breve pausa per permettere il cleanup
+                Thread.Sleep(1000);
+                
+                // NUOVO: Diagnostica POST-cleanup
+                var postCleanupConnections = GetConnectionCount(connectionString, databaseName);
+                
+                _logger.LogInformation("Cleanup completed for {DatabaseName}: {Before} → {After} connections", 
+                    databaseName, preCleanupConnections, postCleanupConnections);
             }
             catch (Exception ex)
             {
@@ -486,8 +496,33 @@ namespace SyncClient.Sync
             }
         }
 
+        /// <summary>
+        /// Ottieni il numero di connessioni attive per verificare l'efficacia del cleanup
+        /// </summary>
+        private int GetConnectionCount(string connectionString, string databaseName)
+        {
+            try
+            {
+                using var connection = new SqlConnection(connectionString);
+                connection.Open();
+                
+                using var cmd = connection.CreateCommand();
+                cmd.CommandTimeout = 10;
+                cmd.CommandText = @"
+                    SELECT COUNT(*) 
+                    FROM sys.dm_exec_sessions 
+                    WHERE database_id = DB_ID() 
+                    AND session_id > 50 
+                    AND program_name LIKE '%.Net SqlClient Data Provider%'";
+                
+                return (int)cmd.ExecuteScalar();
+            }
+            catch
+            {
+                return -1; // Errore nel conteggio
+            }
+        }
+
         #endregion
     }
 }
-
-

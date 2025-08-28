@@ -97,7 +97,7 @@ namespace SyncClient.Sync
             {
                 try
                 {
-                    _logger.LogInformation("---------------------------------------------------");
+                    _logger.LogInformation("####################################################");
                     
                     // contatore dei cicli di sync
                     _logger.LogInformation($"Starting syncronization cycle #{++_syncCicleCount}");
@@ -109,7 +109,7 @@ namespace SyncClient.Sync
                     // Sincronizzazione del database secondario
                     _logger.LogInformation("Starting synchronization for Secondary Database...");
                     await SynchronizeWithRetryAsync(_secondaryClientConn, _secondaryServiceUrl, "Secondary Database");
-                    _logger.LogInformation("---------------------------------------------------");
+                    _logger.LogInformation("####################################################");
                 }
                 catch (Exception ex)
                 {
@@ -195,7 +195,7 @@ namespace SyncClient.Sync
                 _logger.LogInformation("\n");
 
                 // cleanup
-                await SafeConnectionCleanupAsync(clientConn, databaseName);
+                SafeConnectionCleanup(clientConn, databaseName);
             }
             catch (Exception ex)
             {
@@ -209,7 +209,7 @@ namespace SyncClient.Sync
                 }
 
                 // cleanup di emergenza in caso di errore 
-                await SafeConnectionCleanupAsync(clientConn, databaseName);
+                SafeConnectionCleanup(clientConn, databaseName);
 
                 throw;
             }
@@ -439,7 +439,11 @@ namespace SyncClient.Sync
                 var syncTables = new List<string>();
                 while (await reader.ReadAsync())
                 {
-                    syncTables.Add(reader["TABLE_NAME"].ToString());
+                    var tableName = reader["TABLE_NAME"]?.ToString();
+                    if (!string.IsNullOrEmpty(tableName))
+                    {
+                        syncTables.Add(tableName);
+                    }
                 }
                 
                 if (syncTables.Count > 0)
@@ -460,7 +464,7 @@ namespace SyncClient.Sync
         /// <summary>
         /// Cleanup sicuro che tocca solo le connessioni della propria applicazione
         /// </summary>
-        private async Task SafeConnectionCleanupAsync(string connectionString, string databaseName)
+        private void SafeConnectionCleanup(string connectionString, string databaseName)
         {
             try
             {

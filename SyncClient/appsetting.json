@@ -8,6 +8,6 @@
     "SecondaryDatabase": "Server=localhost,14331;Database=TERRADISIENA;User ID=sa;Password=Terya12345!;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True"
   },
   "ConnectionSettings": {
-    "ConnectionTimeout": 300
+    "ConnectionTimeout": 50
   }
 }

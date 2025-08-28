@@ -470,29 +470,29 @@ namespace SyncClient.Sync
             {
                 _logger.LogInformation("Starting connection cleanup for {DatabaseName}...", databaseName);
                 
-                // NUOVO: Diagnostica PRE-cleanup
                 var preCleanupConnections = GetConnectionCount(connectionString, databaseName);
                 
-                // 1. Cleanup del connection pool solo per questa connection string
+                // Cleanup più aggressivo
                 using var tempConnection = new SqlConnection(connectionString);
                 SqlConnection.ClearPool(tempConnection);
-
-                // 2. Forza garbage collection per rilasciare oggetti .NET non utilizzati
+                
+                // Cleanup di TUTTI i pool (temporaneo per test)
+                SqlConnection.ClearAllPools();
+                
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
+                GC.Collect(); // Doppio GC
                 
-                // NUOVO: Breve pausa per permettere il cleanup
-                Thread.Sleep(1000);
+                Thread.Sleep(3000); // Pausa più lunga
                 
-                // NUOVO: Diagnostica POST-cleanup
                 var postCleanupConnections = GetConnectionCount(connectionString, databaseName);
                 
-                _logger.LogInformation("Cleanup completed for {DatabaseName}: {Before} → {After} connections", 
+                _logger.LogInformation("AGGRESSIVE Cleanup for {DatabaseName}: {Before} → {After} connections", 
                     databaseName, preCleanupConnections, postCleanupConnections);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning("Safe connection cleanup failed for {DatabaseName}: {Error}", databaseName, ex.Message);
+                _logger.LogWarning("Aggressive cleanup failed for {DatabaseName}: {Error}", databaseName, ex.Message);
             }
         }
 

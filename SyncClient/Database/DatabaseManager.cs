@@ -371,7 +371,8 @@ namespace SyncClient.Database
                 var dbName = reader["DATABASE_NAME"]?.ToString() ?? "UNKNOWN";
                 var retentionPeriod = reader["retention_period"];
                 var retentionUnits = reader["retention_period_units_desc"]?.ToString() ?? "UNKNOWN";
-                var autoCleanup = reader["is_auto_cleanup_on"] != DBNull.Value && (bool)reader["is_auto_cleanup_on"];
+                var autoCleanupValue = reader["is_auto_cleanup_on"];
+                var autoCleanup = autoCleanupValue != DBNull.Value && Convert.ToBoolean(autoCleanupValue);
 
                 _logger.LogInformation("Change Tracking ENABLED - DB: {DatabaseName}, Retention: {Period} {Units}, AutoCleanup: {AutoCleanup}",
                     dbName, retentionPeriod, retentionUnits, autoCleanup);
@@ -562,7 +563,8 @@ namespace SyncClient.Database
                 var dbName = reader["DATABASE_NAME"].ToString();
                 var retentionPeriod = reader["retention_period"];
                 var retentionUnits = reader["retention_period_units_desc"].ToString();
-                var autoCleanup = (bool)reader["is_auto_cleanup_on"];
+                var autoCleanupValue = reader["is_auto_cleanup_on"];
+                var autoCleanup = autoCleanupValue != DBNull.Value && Convert.ToBoolean(autoCleanupValue);
 
                 _logger.LogInformation("Change Tracking found - DB: {DatabaseName}, Retention: {Period} {Units}, AutoCleanup: {AutoCleanup}",
                     dbName, retentionPeriod, retentionUnits, autoCleanup);

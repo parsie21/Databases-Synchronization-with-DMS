@@ -3,9 +3,10 @@ using Dotmim.Sync.SqlServer;
 using Dotmim.Sync.Web.Client;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using SyncClient.Database;
 using System;
 using System.Threading.Tasks;
-using System.Xml.Schema;
+
 
 namespace SyncClient.Sync
 {
@@ -48,12 +49,16 @@ namespace SyncClient.Sync
         private readonly int _delayMs;
 
         /// <summary>
+        /// Manager per la gestione del database.
+        /// </summary>
+        private readonly DatabaseManager _databaseManager;
+
+        /// <summary>
         /// Contatore dei cicli di sincronizzazione
         /// </summary>
         private int _syncCicleCount;
 
         #endregion
-
         #region Constructor
 
         /// <summary>
@@ -80,18 +85,36 @@ namespace SyncClient.Sync
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _delayMs = delayMs;
             _syncCicleCount = 0;
+            
+            // Inizializza il DatabaseManager
+            _databaseManager = new DatabaseManager(_logger);
         }
 
         #endregion
-
         #region Methods
-
         /// <summary>
         /// Avvia il ciclo infinito di sincronizzazione per i due database in sequenza.
         /// </summary>
         public async Task RunAsync()
         {
+            // Verifica iniziale e abilitazione Change Tracking per entrambi i database
+            _logger.LogInformation("Performing initial setup and Change Tracking verification...");
             
+            var primaryCTResult = await _databaseManager.EnsureChangeTrackingIsEnabledAsync(_primaryClientConn, "Primary Database");
+            if (!primaryCTResult)
+            {
+                _logger.LogError("Failed to ensure Change Tracking on Primary Database. Cannot proceed with synchronization.");
+                return;
+            }
+
+            var secondaryCTResult = await _databaseManager.EnsureChangeTrackingIsEnabledAsync(_secondaryClientConn, "Secondary Database");
+            if (!secondaryCTResult)
+            {
+                _logger.LogError("Failed to ensure Change Tracking on Secondary Database. Cannot proceed with synchronization.");
+                return;
+            }
+
+            _logger.LogInformation("Initial setup completed successfully. Starting synchronization cycles...");
 
             while (true)
             {
@@ -100,7 +123,7 @@ namespace SyncClient.Sync
                     _logger.LogInformation("####################################################");
                     
                     // contatore dei cicli di sync
-                    _logger.LogInformation($"Starting syncronization cycle #{++_syncCicleCount}");
+                    _logger.LogInformation($"Starting synchronization cycle #{++_syncCicleCount}");
 
                     // Sincronizzazione del database primario
                     _logger.LogInformation("Starting synchronization for Primary Database...");
@@ -114,7 +137,7 @@ namespace SyncClient.Sync
                 catch (Exception ex)
                 {
                     // Log degli errori generali con numero del ciclo 
-                    _logger.LogError(ex, "Error in synchronization cycle #{CycleNumber}: {Message}",_syncCicleCount, ex.Message);
+                    _logger.LogError(ex, "Error in synchronization cycle #{CycleNumber}: {Message}", _syncCicleCount, ex.Message);
                 }
 
                 // Attende prima di ripetere la sincronizzazione
@@ -122,7 +145,6 @@ namespace SyncClient.Sync
                 await Task.Delay(_delayMs);
             }
         }
-
         /// <summary>
         /// Esegue la sincronizzazione per un singolo database.
         /// </summary>
@@ -133,8 +155,8 @@ namespace SyncClient.Sync
         {
             try
             {
-
-                await PerformSqlDiagnosticsAsync(clientConn, databaseName);
+                // Utilizza DatabaseManager per la diagnostica
+                await _databaseManager.PerformDatabaseDiagnosticsAsync(clientConn, databaseName);
 
                 // Crea i provider Dotmim.Sync per client e server
                 var localProvider = new SqlSyncChangeTrackingProvider(clientConn);
@@ -154,48 +176,11 @@ namespace SyncClient.Sync
                 var summary = await agent.SynchronizeAsync(scopeName: scopeName);
                 var syncEnd = DateTime.Now;
 
-                // Log dei risultati della sincronizzazione
-                _logger.LogInformation("......................................");
-                _logger.LogInformation("... SYNC SUMMARY FOR {DatabaseName} ...", databaseName);
-                _logger.LogInformation("Total changes downloaded: {Downloaded}", summary.TotalChangesAppliedOnClient);
-                _logger.LogInformation("Total changes uploaded:   {Uploaded}", summary.TotalChangesAppliedOnServer);
-                _logger.LogInformation("Conflicts:                {Conflicts}", summary.TotalResolvedConflicts);
-                var duration = (syncEnd - syncStart).TotalSeconds;
-                _logger.LogInformation("Duration:                 {Duration:F2}s", duration);
-
-                // Additional logging 
-                _logger.LogInformation("......................................");
-                _logger.LogInformation("Additional info:");
-
-                // Monitoring sync duration
-                if (duration > 30)
-                {
-                    _logger.LogWarning("Slow Sync detected for {Database}: {Duration:F2}s (Cycle #{Cycle})",
-                        databaseName, duration, _syncCicleCount);
-                }
-                else if (duration > 15)
-                {
-                    _logger.LogWarning("Moderate slow Sync for {Database}: {Duration:F2}s (Cycle #{Cycle})",
-                        databaseName, duration, _syncCicleCount);
-                }
-                else if (duration > 5)
-                {
-                    _logger.LogInformation("Normal Sync duration for {Database}: {Duration:F2}s",
-                        databaseName, duration);
-                }
-                else
-                {
-                    _logger.LogInformation("Fast sync duration for {Database}: {Duration:F2}s",
-                        databaseName, duration);
-                }
-
-                // Avviso se nessuna modifica è stata applicata
-                if (summary.TotalChangesAppliedOnClient == 0 && summary.TotalChangesAppliedOnServer == 0)
-                    _logger.LogWarning("No changes applied during synchronization for {DatabaseName}.", databaseName);
-                _logger.LogInformation("\n");
+                // Log dei risultati usando il metodo dedicato
+                LogSyncResults(summary, databaseName, syncStart, syncEnd);
 
                 // cleanup
-                SafeConnectionCleanup(clientConn, databaseName);
+                await _databaseManager.PerformConnectionCleanup(clientConn, databaseName);
             }
             catch (Exception ex)
             {
@@ -208,15 +193,14 @@ namespace SyncClient.Sync
                     _logger.LogError("Inner exception: {Message}", ex.InnerException.Message);
                 }
 
-                // cleanup di emergenza in caso di errore 
-                SafeConnectionCleanup(clientConn, databaseName);
+                // cleanup
+                await _databaseManager.PerformConnectionCleanup(clientConn, databaseName);
 
                 throw;
             }
             
             
         }
-
         private async Task SynchronizeWithRetryAsync(string clientConn, Uri serviceUrl, string databaseName)
         {
             const int maxRetries = 3;
@@ -249,280 +233,57 @@ namespace SyncClient.Sync
                 }
             }
         }
-
-        private async Task PerformSqlDiagnosticsAsync(string connectionString, string databaseName)
-        {
-            try
-            {
-                using var connection = new SqlConnection(connectionString);
-                await connection.OpenAsync();
-                
-                _logger.LogInformation("=== DIAGNOSTICS FOR {DatabaseName} ===", databaseName);
-                
-                // 1. Verifica connessioni attive E limiti
-                using var connCmd = connection.CreateCommand();
-                connCmd.CommandTimeout = 30;
-                connCmd.CommandText = @"
-                    SELECT 
-                        COUNT(*) as ActiveConnections,
-                        @@MAX_CONNECTIONS as MaxConnections,
-                        (SELECT value FROM sys.configurations WHERE name = 'user connections') as UserConnectionsLimit
-                    FROM sys.dm_exec_connections";
-                
-                using var connReader = await connCmd.ExecuteReaderAsync();
-                if (await connReader.ReadAsync())
-                {
-                    var activeConnections = (int)connReader["ActiveConnections"];
-                    var maxConnections = (int)connReader["MaxConnections"];
-                    var userLimit = (int)connReader["UserConnectionsLimit"];
-                    
-                    _logger.LogInformation("Connections - Active: {Active}, Max: {Max}, UserLimit: {UserLimit}", 
-                        activeConnections, maxConnections, userLimit);
-                    
-                    // Alert se ci stiamo avvicinando ai limiti
-                    if (activeConnections > maxConnections * 0.8)
-                    {
-                        _logger.LogWarning("HIGH CONNECTION USAGE: {Active}/{Max} ({Percentage:F1}%)", 
-                            activeConnections, maxConnections, (activeConnections * 100.0 / maxConnections));
-                    }
-                }
-                
-                // 2. Verifica sessioni per database specifico
-                using var dbConnCmd = connection.CreateCommand();
-                dbConnCmd.CommandTimeout = 30;
-                dbConnCmd.CommandText = @"
-                    SELECT 
-                        DB_NAME(database_id) as DatabaseName,
-                        COUNT(*) as SessionCount,
-                        status,
-                        program_name
-                    FROM sys.dm_exec_sessions 
-                    WHERE database_id > 0
-                    GROUP BY database_id, status, program_name
-                    ORDER BY COUNT(*) DESC";
-                
-                _logger.LogInformation("--- SESSION BREAKDOWN ---");
-                using var dbConnReader = await dbConnCmd.ExecuteReaderAsync();
-                while (await dbConnReader.ReadAsync())
-                {
-                    _logger.LogInformation("DB: {Database}, Sessions: {Count}, Status: {Status}, Program: {Program}",
-                        dbConnReader["DatabaseName"], dbConnReader["SessionCount"], 
-                        dbConnReader["status"], dbConnReader["program_name"]);
-                }
-                
-                // 3. Verifica connessioni bloccate/dormienti
-                using var idleCmd = connection.CreateCommand();
-                idleCmd.CommandTimeout = 30;
-                idleCmd.CommandText = @"
-                    SELECT 
-                        status,
-                        COUNT(*) as Count
-                    FROM sys.dm_exec_sessions 
-                    WHERE session_id > 50  -- Esclude sessioni di sistema
-                    GROUP BY status";
-                
-                _logger.LogInformation("--- SESSION STATUS ---");
-                using var idleReader = await idleCmd.ExecuteReaderAsync();
-                while (await idleReader.ReadAsync())
-                {
-                    var status = idleReader["status"].ToString();
-                    var count = (int)idleReader["Count"];
-                    _logger.LogInformation("Status: {Status}, Count: {Count}", status, count);
-                    
-                    // Alert per troppe sessioni dormienti
-                    if (status == "sleeping" && count > 50)
-                    {
-                        _logger.LogWarning("HIGH SLEEPING SESSIONS: {Count} sleeping connections detected", count);
-                    }
-                }
-                
-                // 4. Verifica processi bloccati (come prima)
-                using var blockCmd = connection.CreateCommand();
-                blockCmd.CommandTimeout = 30;
-                blockCmd.CommandText = @"
-                    SELECT 
-                        blocking_session_id,
-                        wait_type,
-                        wait_time,
-                        command
-                    FROM sys.dm_exec_requests 
-                    WHERE blocking_session_id > 0 OR session_id IN (
-                        SELECT DISTINCT blocking_session_id 
-                        FROM sys.dm_exec_requests 
-                        WHERE blocking_session_id > 0
-                    )";
-                
-                using var blockReader = await blockCmd.ExecuteReaderAsync();
-                bool hasBlocks = false;
-                while (await blockReader.ReadAsync())
-                {
-                    hasBlocks = true;
-                    _logger.LogWarning("BLOCKED PROCESS: SessionId blocking: {BlockingId}, WaitType: {WaitType}, WaitTime: {WaitTime}ms, Command: {Command}",
-                        blockReader["blocking_session_id"], blockReader["wait_type"], 
-                        blockReader["wait_time"], blockReader["command"]);
-                }
-                
-                if (!hasBlocks)
-                {
-                    _logger.LogInformation("No blocked processes detected");
-                }
-                
-                // 5. Se è Primary Database, verifica Change Tracking
-                if (databaseName == "Primary Database")
-                {
-                    await CheckChangeTrackingStatusAsync(connection);
-                }
-                
-                // 6. Verifica tabelle di sincronizzazione DMS
-                await CheckSyncTablesAsync(connection, databaseName);
-                
-                _logger.LogInformation("=== END DIAGNOSTICS ===");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Diagnostics failed for {DatabaseName}: {Error}", databaseName, ex.Message);
-            }
-        }
-
-        private async Task CheckChangeTrackingStatusAsync(SqlConnection connection)
-        {
-            try
-            {
-                using var cmd = connection.CreateCommand();
-                cmd.CommandTimeout = 30;
-                cmd.CommandText = @"
-                    SELECT 
-                        OBJECT_NAME(ct.object_id) AS TableName,
-                        ct.min_valid_version,
-                        ct.cleanup_version,
-                        p.rows AS EstimatedRows,
-                        CHANGE_TRACKING_CURRENT_VERSION() as CurrentVersion
-                    FROM sys.change_tracking_tables ct
-                    JOIN sys.partitions p ON ct.object_id = p.object_id AND p.index_id IN (0, 1)
-                    WHERE OBJECT_NAME(ct.object_id) IN ('ana_Clienti', 'ana_Fornitori', 'mag_Banchi')
-                    ORDER BY p.rows DESC";
-                
-                using var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    var tableName = reader["TableName"].ToString();
-                    var rows = Convert.ToInt64(reader["EstimatedRows"]);
-                    var minVersion = reader["min_valid_version"];
-                    var cleanupVersion = reader["cleanup_version"];
-                    var currentVersion = reader["CurrentVersion"];
-                    
-                    _logger.LogInformation("ChangeTraking - Table: {Table}, Rows: {Rows:N0}, MinVer: {MinVer}, CleanupVer: {CleanupVer}, CurrentVer: {CurrentVer}",
-                        tableName, rows, minVersion, cleanupVersion, currentVersion);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning("Change Tracking check failed: {Error}", ex.Message);
-            }
-        }
-
-        private async Task CheckSyncTablesAsync(SqlConnection connection, string databaseName)
-        {
-            try
-            {
-                using var cmd = connection.CreateCommand();
-                cmd.CommandTimeout = 30;
-                cmd.CommandText = @"
-                    SELECT 
-                        TABLE_NAME 
-                    FROM INFORMATION_SCHEMA.TABLES 
-                    WHERE TABLE_NAME LIKE '%_tracking%' 
-                    OR TABLE_NAME LIKE 'scope_info%'
-                    ORDER BY TABLE_NAME";
-                
-                using var reader = await cmd.ExecuteReaderAsync();
-                var syncTables = new List<string>();
-                while (await reader.ReadAsync())
-                {
-                    var tableName = reader["TABLE_NAME"]?.ToString();
-                    if (!string.IsNullOrEmpty(tableName))
-                    {
-                        syncTables.Add(tableName);
-                    }
-                }
-                
-                if (syncTables.Count > 0)
-                {
-                    _logger.LogInformation("DMS Sync tables found: {Tables}", string.Join(", ", syncTables));
-                }
-                else
-                {
-                    _logger.LogWarning("No DMS sync tables found - this might indicate sync metadata corruption");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning("Sync tables check failed: {Error}", ex.Message);
-            }
-        }
-
         /// <summary>
-        /// Cleanup sicuro con diagnostica prima/dopo
+        /// Registra i risultati della sincronizzazione con analisi delle performance
         /// </summary>
-        private void SafeConnectionCleanup(string connectionString, string databaseName)
+        /// <param name="summary">Risultato della sincronizzazione</param>
+        /// <param name="databaseName">Nome del database sincronizzato</param>
+        /// <param name="syncStart">Timestamp di inizio sincronizzazione</param>
+        /// <param name="syncEnd">Timestamp di fine sincronizzazione</param>
+        private void LogSyncResults(SyncResult summary, string databaseName, DateTime syncStart, DateTime syncEnd)
         {
-            try
-            {
-                _logger.LogInformation("Starting connection cleanup for {DatabaseName}...", databaseName);
-                
-                var preCleanupConnections = GetConnectionCount(connectionString, databaseName);
-                
-                // Cleanup più aggressivo
-                using var tempConnection = new SqlConnection(connectionString);
-                SqlConnection.ClearPool(tempConnection);
-                
-                // Cleanup di TUTTI i pool (temporaneo per test)
-                SqlConnection.ClearAllPools();
-                
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect(); // Doppio GC
-                
-                Thread.Sleep(3000); // Pausa più lunga
-                
-                var postCleanupConnections = GetConnectionCount(connectionString, databaseName);
-                
-                _logger.LogInformation("AGGRESSIVE Cleanup for {DatabaseName}: {Before} → {After} connections", 
-                    databaseName, preCleanupConnections, postCleanupConnections);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning("Aggressive cleanup failed for {DatabaseName}: {Error}", databaseName, ex.Message);
-            }
-        }
+            var duration = (syncEnd - syncStart).TotalSeconds;
+            
+            // Log dei risultati della sincronizzazione
+            _logger.LogInformation("......................................");
+            _logger.LogInformation("... SYNC SUMMARY FOR {DatabaseName} ...", databaseName);
+            _logger.LogInformation("Total changes downloaded: {Downloaded}", summary.TotalChangesAppliedOnClient);
+            _logger.LogInformation("Total changes uploaded:   {Uploaded}", summary.TotalChangesAppliedOnServer);
+            _logger.LogInformation("Conflicts:                {Conflicts}", summary.TotalResolvedConflicts);
+            _logger.LogInformation("Duration:                 {Duration:F2}s", duration);
 
-        /// <summary>
-        /// Ottieni il numero di connessioni attive per verificare l'efficacia del cleanup
-        /// </summary>
-        private int GetConnectionCount(string connectionString, string databaseName)
-        {
-            try
-            {
-                using var connection = new SqlConnection(connectionString);
-                connection.Open();
-                
-                using var cmd = connection.CreateCommand();
-                cmd.CommandTimeout = 10;
-                cmd.CommandText = @"
-                    SELECT COUNT(*) 
-                    FROM sys.dm_exec_sessions 
-                    WHERE database_id = DB_ID() 
-                    AND session_id > 50 
-                    AND program_name LIKE '%.Net SqlClient Data Provider%'";
-                
-                return (int)cmd.ExecuteScalar();
-            }
-            catch
-            {
-                return -1; // Errore nel conteggio
-            }
-        }
+            // Additional logging 
+            _logger.LogInformation("......................................");
+            _logger.LogInformation("Additional info:");
 
+            // Monitoring sync duration
+            if (duration > 30)
+            {
+                _logger.LogWarning("Slow Sync detected for {Database}: {Duration:F2}s (Cycle #{Cycle})",
+                    databaseName, duration, _syncCicleCount);
+            }
+            else if (duration > 15)
+            {
+                _logger.LogWarning("Moderate slow Sync for {Database}: {Duration:F2}s (Cycle #{Cycle})",
+                    databaseName, duration, _syncCicleCount);
+            }
+            else if (duration > 5)
+            {
+                _logger.LogInformation("Normal Sync duration for {Database}: {Duration:F2}s",
+                    databaseName, duration);
+            }
+            else
+            {
+                _logger.LogInformation("Fast sync duration for {Database}: {Duration:F2}s",
+                    databaseName, duration);
+            }
+
+            // Avviso se nessuna modifica è stata applicata
+            if (summary.TotalChangesAppliedOnClient == 0 && summary.TotalChangesAppliedOnServer == 0)
+                _logger.LogWarning("No changes applied during synchronization for {DatabaseName}.", databaseName);
+            
+            _logger.LogInformation("\n");
+        }
         #endregion
     }
 }

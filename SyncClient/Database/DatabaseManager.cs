@@ -70,35 +70,89 @@ namespace SyncClient.Database
 
                 // Verifica se Change Tracking è abilitato a livello database
                 var isDatabaseCTEnabled = await IsChangeTrackingEnabledAsync(connection);
-                
+
                 if (!isDatabaseCTEnabled)
                 {
                     _logger.LogWarning("Change Tracking not enabled on {DatabaseName}. Attempting to enable...", databaseName);
                     var enableResult = await EnableChangeTrackingAsync(connection);
-                    
+
                     if (!enableResult)
                     {
                         _logger.LogError("Failed to enable Change Tracking on {DatabaseName}", databaseName);
                         return false;
                     }
-                    
+
                     _logger.LogInformation("Change Tracking enabled successfully on {DatabaseName}", databaseName);
                 }
                 else
                 {
                     _logger.LogInformation("Change Tracking already enabled on {DatabaseName}", databaseName);
                 }
-                
+
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error checking/enabling Change Tracking for {DatabaseName}: {Error}", 
+                _logger.LogError(ex, "Error checking/enabling Change Tracking for {DatabaseName}: {Error}",
                     databaseName, ex.Message);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Esegue cleanup delle connessioni del database
+        /// </summary>
+        public async Task PerformConnectionCleanup(string connectionString, string databaseName)
+        {
+            try
+            {
+                _logger.LogInformation("Starting connection cleanup for {DatabaseName}...", databaseName);
+
+                var preCleanupConnections = GetConnectionCount(connectionString, databaseName);
+
+                using var tempConnection = new SqlConnection(connectionString);
+                SqlConnection.ClearPool(tempConnection);
+                SqlConnection.ClearAllPools();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+                await Task.Delay(3000);
+
+                var postCleanupConnections = GetConnectionCount(connectionString, databaseName);
+
+                _logger.LogInformation("Connection cleanup for {DatabaseName}: {Before} -> {After} connections",
+                    databaseName, preCleanupConnections, postCleanupConnections);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Connection cleanup failed for {DatabaseName}: {Error}", databaseName, ex.Message);
+            }
+        }
+        public int GetConnectionCount(string connectionString, string databaseName)
+        {
+            try
+            {
+                using var connection = new SqlConnection(connectionString);
+                connection.Open();
+
+                using var cmd = connection.CreateCommand();
+                cmd.CommandTimeout = 10;
+                cmd.CommandText = @"
+                    SELECT COUNT(*) 
+                    FROM sys.dm_exec_sessions 
+                    WHERE database_id = DB_ID() 
+                    AND session_id > 50 
+                    AND program_name LIKE '%.Net SqlClient Data Provider%'";
+
+                return (int)cmd.ExecuteScalar();
+            }
+            catch
+            {
+                return -1;
+            }
+        }
         #endregion
 
         #region Private Diagnostic Methods
@@ -118,9 +172,9 @@ namespace SyncClient.Database
             if (await reader.ReadAsync())
             {
                 // CORREZIONI: Nomi dei campi corretti
-                var activeConnections = (int)reader["ActiveConnections"];     
+                var activeConnections = (int)reader["ActiveConnections"];
                 var maxConnections = (int)reader["MaxConnections"];
-                var userLimit = (int)reader["UserConnectionsLimit"];         
+                var userLimit = (int)reader["UserConnectionsLimit"];
 
                 _logger.LogInformation("Connections - Active: {Active}, Max: {Max}, UserLimit: {UserLimit}",
                     activeConnections, maxConnections, userLimit);
@@ -131,7 +185,7 @@ namespace SyncClient.Database
                         activeConnections, maxConnections, (activeConnections * 100.0 / maxConnections));
                 }
             }
-            await cmd.DisposeAsync();
+
         }
 
         private async Task CheckSessionBreakdownAsync(SqlConnection connection)
@@ -162,7 +216,6 @@ namespace SyncClient.Database
                 _logger.LogInformation("DB: {Database}, Sessions: {Count}, Status: {Status}, Program: {Program}",
                     dbName, sessionCount, status, programName);
             }
-            await cmd.DisposeAsync();
         }
 
         private async Task CheckSessionStatusAsync(SqlConnection connection)
@@ -204,7 +257,6 @@ namespace SyncClient.Database
                         break;
                 }
             }
-            await cmd.DisposeAsync();
         }
 
         private async Task CheckBlockedProcessesAsync(SqlConnection connection)
@@ -410,20 +462,20 @@ namespace SyncClient.Database
                 var syncTables = new List<string>();
                 var trackingTables = new List<string>();
                 var metadataTables = new List<string>();
-                
+
                 _logger.LogInformation("--- DMS SYNC TABLES ---");
-                
+
                 while (await reader.ReadAsync())
                 {
                     var tableName = reader["TABLE_NAME"]?.ToString();
                     var tableSchema = reader["TABLE_SCHEMA"]?.ToString() ?? "dbo";
                     var tableType = reader["TABLE_TYPE"]?.ToString() ?? "TABLE";
-                    
+
                     if (!string.IsNullOrEmpty(tableName))
                     {
                         var fullTableName = $"{tableSchema}.{tableName}";
                         syncTables.Add(fullTableName);
-                        
+
                         if (tableName.Contains("_tracking"))
                         {
                             trackingTables.Add(fullTableName);
@@ -448,11 +500,11 @@ namespace SyncClient.Database
                     _logger.LogInformation("- Total DMS tables: {TotalCount}", syncTables.Count);
                     _logger.LogInformation("- Tracking tables: {TrackingCount}", trackingTables.Count);
                     _logger.LogInformation("- Metadata tables: {MetadataCount}", metadataTables.Count);
-                    
+
                     // Verifica presenza tabelle essenziali
                     var hasMetadata = metadataTables.Any(t => t.Contains("scope_info"));
                     var hasTracking = trackingTables.Count > 0;
-                    
+
                     if (hasMetadata && hasTracking)
                     {
                         _logger.LogInformation("SYNC INFRASTRUCTURE STATUS: Complete - Both metadata and tracking tables present");

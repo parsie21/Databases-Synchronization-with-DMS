@@ -56,6 +56,49 @@ namespace SyncClient.Database
             }
         }
 
+        /// <summary>
+        /// Verifica e abilita Change Tracking se necessario (solo a livello database)
+        /// </summary>
+        public async Task<bool> EnsureChangeTrackingIsEnabledAsync(string connectionString, string databaseName)
+        {
+            try
+            {
+                using var connection = new SqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                _logger.LogInformation("Checking Change Tracking status for {DatabaseName}...", databaseName);
+
+                // Verifica se Change Tracking è abilitato a livello database
+                var isDatabaseCTEnabled = await IsChangeTrackingEnabledAsync(connection);
+                
+                if (!isDatabaseCTEnabled)
+                {
+                    _logger.LogWarning("Change Tracking not enabled on {DatabaseName}. Attempting to enable...", databaseName);
+                    var enableResult = await EnableChangeTrackingAsync(connection);
+                    
+                    if (!enableResult)
+                    {
+                        _logger.LogError("Failed to enable Change Tracking on {DatabaseName}", databaseName);
+                        return false;
+                    }
+                    
+                    _logger.LogInformation("Change Tracking enabled successfully on {DatabaseName}", databaseName);
+                }
+                else
+                {
+                    _logger.LogInformation("Change Tracking already enabled on {DatabaseName}", databaseName);
+                }
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking/enabling Change Tracking for {DatabaseName}: {Error}", 
+                    databaseName, ex.Message);
+                return false;
+            }
+        }
+
         #endregion
 
         #region Private Diagnostic Methods
@@ -345,10 +388,6 @@ namespace SyncClient.Database
             }
         }
 
-        /// <summary>
-        /// Verifica le tabelle di sincronizzazione DMS (metadata e tracking tables)
-        /// Controlla la presenza delle tabelle create da Dotmim.Sync per gestire i metadati
-        /// </summary>
         private async Task CheckSyncTablesAsync(SqlConnection connection, string databaseName)
         {
             try
@@ -385,7 +424,6 @@ namespace SyncClient.Database
                         var fullTableName = $"{tableSchema}.{tableName}";
                         syncTables.Add(fullTableName);
                         
-                        // Categorizza le tabelle per tipo
                         if (tableName.Contains("_tracking"))
                         {
                             trackingTables.Add(fullTableName);
@@ -441,6 +479,72 @@ namespace SyncClient.Database
             catch (Exception ex)
             {
                 _logger.LogWarning("Sync tables check failed for {DatabaseName}: {Error}", databaseName, ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Private Change Tracking Methods
+
+        /// <summary>
+        /// Verifica se Change Tracking è abilitato usando sys.change_tracking_databases
+        /// </summary>
+        private async Task<bool> IsChangeTrackingEnabledAsync(SqlConnection connection)
+        {
+            using var cmd = connection.CreateCommand();
+            cmd.CommandTimeout = 30;
+            cmd.CommandText = @"
+                SELECT 
+                    DB_NAME(database_id) AS DATABASE_NAME,
+                    database_id,
+                    is_auto_cleanup_on,
+                    retention_period,
+                    retention_period_units,
+                    retention_period_units_desc
+                FROM sys.change_tracking_databases
+                WHERE database_id = DB_ID()";
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                var dbName = reader["DATABASE_NAME"].ToString();
+                var retentionPeriod = reader["retention_period"];
+                var retentionUnits = reader["retention_period_units_desc"].ToString();
+                var autoCleanup = (bool)reader["is_auto_cleanup_on"];
+
+                _logger.LogInformation("Change Tracking found - DB: {DatabaseName}, Retention: {Period} {Units}, AutoCleanup: {AutoCleanup}",
+                    dbName, retentionPeriod, retentionUnits, autoCleanup);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Abilita Change Tracking a livello database
+        /// </summary>
+        private async Task<bool> EnableChangeTrackingAsync(SqlConnection connection)
+        {
+            try
+            {
+                using var cmd = connection.CreateCommand();
+                cmd.CommandTimeout = 60; // Timeout più lungo per operazioni DDL
+                cmd.CommandText = @"
+                    ALTER DATABASE CURRENT 
+                    SET CHANGE_TRACKING = ON 
+                    (CHANGE_RETENTION = 7 DAYS, AUTO_CLEANUP = ON)";
+
+                await cmd.ExecuteNonQueryAsync();
+
+                // Verifica che l'abilitazione sia avvenuta con successo
+                await Task.Delay(1000); // Breve pausa per permettere l'attivazione
+                return await IsChangeTrackingEnabledAsync(connection);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to enable Change Tracking at database level: {Error}", ex.Message);
+                return false;
             }
         }
 

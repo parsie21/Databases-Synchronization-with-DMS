@@ -112,11 +112,14 @@ namespace SyncClient
                 // Applica il timeout di connessione alle stringhe di connessione
                 var primaryDbConnBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(primaryDbConn)
                 {
-                    ConnectTimeout = connectionTimeout
+                    ConnectTimeout = connectionTimeout,
+                    CommandTimeout = 800
                 };
                 var secondaryDbConnBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(secondaryDbConn)
                 {
-                    ConnectTimeout = connectionTimeout
+                    ConnectTimeout = connectionTimeout,
+                    CommandTimeout = 800
+
                 };
 
                 // Aggiorna le stringhe di connessione con il timeout configurato
@@ -132,11 +135,16 @@ namespace SyncClient
                 syncLogger.LogInformation("Secondary Endpoint: {Endpoint}", secondaryEndpointUri);
                 #endregion
 
-
                 #region SyncRunner Initialization
                 // A questo punto, abbiamo tutte le informazioni necessarie per creare un SyncRunner
                 syncLogger.LogInformation("Configuration prepared for synchronization of two databases.");
                 syncLogger.LogInformation("Creating SyncRunner instance...");
+
+                // Ritardo casuale per evitare start simultanei
+                var random = new Random();
+                var startupDelay = random.Next(5000, 15000); // 5-15 secondi di ritardo casuale
+                syncLogger.LogInformation("Applying startup delay of {Delay}ms to avoid concurrent startup issues...", startupDelay);
+                await Task.Delay(startupDelay);
 
                 // Crea un'istanza di SyncRunner con i dati configurati
                 var syncRunner = new SyncRunner(

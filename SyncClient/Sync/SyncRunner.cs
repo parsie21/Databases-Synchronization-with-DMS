@@ -7,7 +7,6 @@ using SyncClient.Database;
 using System;
 using System.Threading.Tasks;
 
-
 namespace SyncClient.Sync
 {
     /// <summary>
@@ -58,7 +57,13 @@ namespace SyncClient.Sync
         /// </summary>
         private int _syncCicleCount;
 
+        /// <summary>
+        /// Durata dell'ultima sincronizzazione del Primary Database per tracking delle performance
+        /// </summary>
+        private double _lastPrimaryDuration = 0;
+
         #endregion
+
         #region Constructor
 
         /// <summary>
@@ -91,7 +96,9 @@ namespace SyncClient.Sync
         }
 
         #endregion
+
         #region Methods
+        
         /// <summary>
         /// Avvia il ciclo infinito di sincronizzazione per i due database in sequenza.
         /// </summary>
@@ -132,6 +139,7 @@ namespace SyncClient.Sync
                     // Sincronizzazione del database secondario
                     _logger.LogInformation("Starting synchronization for Secondary Database...");
                     await SynchronizeWithRetryAsync(_secondaryClientConn, _secondaryServiceUrl, "Secondary Database");
+                    
                     _logger.LogInformation("####################################################");
                 }
                 catch (Exception ex)
@@ -145,6 +153,7 @@ namespace SyncClient.Sync
                 await Task.Delay(_delayMs);
             }
         }
+
         /// <summary>
         /// Esegue la sincronizzazione per un singolo database.
         /// </summary>
@@ -155,19 +164,17 @@ namespace SyncClient.Sync
         {
             try
             {
-                // Utilizza DatabaseManager per la diagnostica
-                await _databaseManager.PerformDatabaseDiagnosticsAsync(clientConn, databaseName);
+                // === DIAGNOSTICA PRE-SINCRONIZZAZIONE ===
+                await PerformPreSyncDiagnostics(clientConn, databaseName);
 
-                // Crea i provider Dotmim.Sync per client e server
+                // === SINCRONIZZAZIONE ===
                 var localProvider = new SqlSyncChangeTrackingProvider(clientConn);
                 var remoteOrchestrator = new WebRemoteOrchestrator(serviceUrl);
                 remoteOrchestrator.HttpClient.Timeout = TimeSpan.FromMinutes(20);
                 var agent = new SyncAgent(localProvider, remoteOrchestrator);
 
                 // Determina lo scope corretto in base al database
-                string scopeName = databaseName == "Primary Database"
-                    ? "PrimaryDatabaseScope"
-                    : "SecondaryDatabaseScope";
+                string scopeName = databaseName == "Primary Database" ? "PrimaryDatabaseScope" : "SecondaryDatabaseScope";
 
                 _logger.LogInformation("Using scope name: {ScopeName} for {DatabaseName}", scopeName, databaseName);
 
@@ -176,10 +183,20 @@ namespace SyncClient.Sync
                 var summary = await agent.SynchronizeAsync(scopeName: scopeName);
                 var syncEnd = DateTime.Now;
 
+                // Traccia durata per diagnostica
+                var duration = (syncEnd - syncStart).TotalSeconds;
+                if (databaseName == "Primary Database")
+                {
+                    _lastPrimaryDuration = duration;
+                }
+
                 // Log dei risultati usando il metodo dedicato
                 LogSyncResults(summary, databaseName, syncStart, syncEnd);
 
-                // cleanup
+                // === DIAGNOSTICA POST-SINCRONIZZAZIONE ===
+                await PerformPostSyncDiagnostics(clientConn, databaseName, duration);
+
+                // Cleanup finale
                 await _databaseManager.PerformConnectionCleanup(clientConn, databaseName);
             }
             catch (Exception ex)
@@ -193,24 +210,128 @@ namespace SyncClient.Sync
                     _logger.LogError("Inner exception: {Message}", ex.InnerException.Message);
                 }
 
-                // cleanup
+                // === DIAGNOSTICA DI ERRORE ===
+                await PerformErrorDiagnostics(clientConn, databaseName, ex);
+
+                // Cleanup anche in caso di errore
                 await _databaseManager.PerformConnectionCleanup(clientConn, databaseName);
 
                 throw;
             }
-            
-            
         }
+
+        /// <summary>
+        /// Esegue diagnostica prima della sincronizzazione
+        /// </summary>
+        private async Task PerformPreSyncDiagnostics(string clientConn, string databaseName)
+        {
+            try
+            {
+                if (databaseName == "Primary Database")
+                {
+                    // Logica escalation della diagnostica basata su performance e cicli
+                    if (_lastPrimaryDuration > 300) // > 5 minuti
+                    {
+                        _logger.LogWarning("Previous sync took {Duration:F2}s - performing critical diagnostics", _lastPrimaryDuration);
+                        await _databaseManager.PerformCriticalDiagnosticsAsync(clientConn, databaseName);
+                    }
+                    else if (_lastPrimaryDuration > 60 || _syncCicleCount % 5 == 0) // > 1 minuto o ogni 5 cicli
+                    {
+                        _logger.LogInformation("Performing advanced diagnostics for performance monitoring");
+                        await _databaseManager.PerformAdvancedDiagnosticsAsync(clientConn, databaseName);
+                    }
+                    else if (_syncCicleCount == 1 || _syncCicleCount % 10 == 0) // Primo ciclo o ogni 10 cicli
+                    {
+                        _logger.LogInformation("Performing comprehensive diagnostics");
+                        await _databaseManager.PerformDatabaseDiagnosticsAsync(clientConn, databaseName);
+                    }
+                    else
+                    {
+                        // Controllo rapido per situazioni normali
+                        await _databaseManager.PerformQuickHealthCheckAsync(clientConn, databaseName);
+                    }
+                }
+                else
+                {
+                    // Per il Secondary Database, solo controlli leggeri
+                    if (_syncCicleCount % 20 == 0) // Ogni 20 cicli
+                    {
+                        await _databaseManager.PerformQuickHealthCheckAsync(clientConn, databaseName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Pre-sync diagnostics failed for {DatabaseName}: {Error}", databaseName, ex.Message);
+                // Non bloccare la sincronizzazione per errori di diagnostica
+            }
+        }
+
+        /// <summary>
+        /// Esegue diagnostica dopo la sincronizzazione
+        /// </summary>
+        private async Task PerformPostSyncDiagnostics(string clientConn, string databaseName, double duration)
+        {
+            try
+            {
+                // Diagnostica post-sync solo se ci sono stati problemi di performance
+                if (databaseName == "Primary Database" && duration > 30)
+                {
+                    _logger.LogInformation("Sync duration {Duration:F2}s - performing post-sync analysis", duration);
+                    await _databaseManager.PerformAdvancedDiagnosticsAsync(clientConn, databaseName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Post-sync diagnostics failed for {DatabaseName}: {Error}", databaseName, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Esegue diagnostica in caso di errore
+        /// </summary>
+        private async Task PerformErrorDiagnostics(string clientConn, string databaseName, Exception syncException)
+        {
+            try
+            {
+                _logger.LogWarning("Performing error diagnostics for {DatabaseName} due to sync failure", databaseName);
+
+                // Diagnostica specifica per tipo di errore
+                var errorMessage = syncException.Message.ToLower();
+                
+                if (errorMessage.Contains("timeout") || errorMessage.Contains("connection"))
+                {
+                    // Problemi di connessione - diagnostica di rete e connessioni
+                    await _databaseManager.PerformDatabaseDiagnosticsAsync(clientConn, databaseName);
+                }
+                else if (errorMessage.Contains("lock") || errorMessage.Contains("deadlock"))
+                {
+                    // Problemi di lock - diagnostica avanzata
+                    await _databaseManager.PerformAdvancedDiagnosticsAsync(clientConn, databaseName);
+                }
+                else
+                {
+                    // Altri errori - diagnostica completa
+                    await _databaseManager.PerformCriticalDiagnosticsAsync(clientConn, databaseName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Error diagnostics failed for {DatabaseName}: {Error}", databaseName, ex.Message);
+            }
+        }
+
         private async Task SynchronizeWithRetryAsync(string clientConn, Uri serviceUrl, string databaseName)
         {
             const int maxRetries = 3;
             const int delayBetweenRetriesMs = 5000;
 
-            for (int attempt=1; attempt<=maxRetries; attempt++)
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
             {
                 try
                 {
                     await SynchronizeAsync(clientConn, serviceUrl, databaseName);
+                    
                     // Log di successo se non è il primo tentativo
                     if (attempt > 1)
                     {
@@ -218,21 +339,22 @@ namespace SyncClient.Sync
                     }
                     return;
                 }
-                catch(Exception ex) when (attempt<maxRetries)
+                catch (Exception ex) when (attempt < maxRetries)
                 {
                     _logger.LogWarning("Sync attempt {Attempt}/{MaxRetries} failed for {Database}. " +
-                             "Retrying in {Delay}ms. Error: {Error}",
-                             attempt, maxRetries, databaseName, delayBetweenRetriesMs, ex.Message);
+                                     "Retrying in {Delay}ms. Error: {Error}",
+                                     attempt, maxRetries, databaseName, delayBetweenRetriesMs, ex.Message);
                     await Task.Delay(delayBetweenRetriesMs);
                 }
-                catch(Exception ex) when (attempt >= maxRetries)
+                catch (Exception ex) when (attempt >= maxRetries)
                 {
                     _logger.LogWarning("All {MaxRetries} retry attempts failed for {Database} at cycle #{CycleNumber}. " +
-                           "Error: {Error}", maxRetries, databaseName, _syncCicleCount, ex.Message);
+                                     "Error: {Error}", maxRetries, databaseName, _syncCicleCount, ex.Message);
                     throw;
                 }
             }
         }
+
         /// <summary>
         /// Registra i risultati della sincronizzazione con analisi delle performance
         /// </summary>
@@ -256,15 +378,30 @@ namespace SyncClient.Sync
             _logger.LogInformation("......................................");
             _logger.LogInformation("Additional info:");
 
-            // Monitoring sync duration
-            if (duration > 30)
+            // Monitoring sync duration con soglie più specifiche
+            if (duration > 300) // > 5 minuti
             {
-                _logger.LogWarning("Slow Sync detected for {Database}: {Duration:F2}s (Cycle #{Cycle})",
+                _logger.LogError("CRITICAL Slow Sync detected for {Database}: {Duration:F2}s (Cycle #{Cycle}) - IMMEDIATE ATTENTION REQUIRED",
+                    databaseName, duration, _syncCicleCount);
+            }
+            else if (duration > 120) // > 2 minuti
+            {
+                _logger.LogWarning("SEVERE Slow Sync detected for {Database}: {Duration:F2}s (Cycle #{Cycle}) - Performance severely degraded",
+                    databaseName, duration, _syncCicleCount);
+            }
+            else if (duration > 60) // > 1 minuto
+            {
+                _logger.LogWarning("Slow Sync detected for {Database}: {Duration:F2}s (Cycle #{Cycle}) - Performance degraded",
+                    databaseName, duration, _syncCicleCount);
+            }
+            else if (duration > 30)
+            {
+                _logger.LogWarning("Moderate slow Sync for {Database}: {Duration:F2}s (Cycle #{Cycle})",
                     databaseName, duration, _syncCicleCount);
             }
             else if (duration > 15)
             {
-                _logger.LogWarning("Moderate slow Sync for {Database}: {Duration:F2}s (Cycle #{Cycle})",
+                _logger.LogInformation("Slightly slow Sync for {Database}: {Duration:F2}s (Cycle #{Cycle})",
                     databaseName, duration, _syncCicleCount);
             }
             else if (duration > 5)
@@ -284,6 +421,7 @@ namespace SyncClient.Sync
             
             _logger.LogInformation("\n");
         }
+
         #endregion
     }
 }

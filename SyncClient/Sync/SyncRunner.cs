@@ -221,7 +221,7 @@ namespace SyncClient.Sync
         }
 
         /// <summary>
-        /// Esegue diagnostica prima della sincronizzazione
+        /// Esegue diagnostica prima della sincronizzazione con focus sui problemi di rete
         /// </summary>
         private async Task PerformPreSyncDiagnostics(string clientConn, string databaseName)
         {
@@ -234,6 +234,13 @@ namespace SyncClient.Sync
                     {
                         _logger.LogWarning("Previous sync took {Duration:F2}s - performing critical diagnostics", _lastPrimaryDuration);
                         await _databaseManager.PerformCriticalDiagnosticsAsync(clientConn, databaseName);
+                        
+                        // AGGIUNGI: Diagnostica specifica per sync lenti senza problemi di DB
+                        if (_lastPrimaryDuration > 600) // > 10 minuti
+                        {
+                            _logger.LogError("EXTREMELY SLOW SYNC detected - investigating network/service issues");
+                            await InvestigateNetworkAndServiceIssues(databaseName);
+                        }
                     }
                     else if (_lastPrimaryDuration > 60 || _syncCicleCount % 5 == 0) // > 1 minuto o ogni 5 cicli
                     {
@@ -264,6 +271,138 @@ namespace SyncClient.Sync
             {
                 _logger.LogWarning("Pre-sync diagnostics failed for {DatabaseName}: {Error}", databaseName, ex.Message);
                 // Non bloccare la sincronizzazione per errori di diagnostica
+            }
+        }
+
+        /// <summary>
+        /// Investiga problemi di rete e servizio quando il DB sembra OK ma sync è lenta
+        /// </summary>
+        private async Task InvestigateNetworkAndServiceIssues(string databaseName)
+        {
+            try
+            {
+                _logger.LogInformation("=== NETWORK & SERVICE INVESTIGATION FOR {DatabaseName} ===", databaseName);
+                
+                // 1. Verifica connettività di base al server
+                var serviceUrl = databaseName == "Primary Database" ? _primaryServiceUrl : _secondaryServiceUrl;
+                await TestServiceConnectivity(serviceUrl, databaseName);
+                
+                // 2. Verifica status della memoria del processo
+                await CheckMemoryUsage();
+                
+                // 3. Verifica GC pressure
+                await CheckGarbageCollectionPressure();
+                
+                _logger.LogInformation("=== END NETWORK & SERVICE INVESTIGATION ===");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Network investigation failed: {Error}", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Testa la connettività al servizio di sync
+        /// </summary>
+        private async Task TestServiceConnectivity(Uri serviceUrl, string databaseName)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.Timeout = TimeSpan.FromSeconds(30);
+                
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                
+                try
+                {
+                    // Test basic connectivity
+                    var response = await httpClient.GetAsync(serviceUrl.ToString().TrimEnd('/') + "/health");
+                    stopwatch.Stop();
+                    
+                    _logger.LogInformation("Service connectivity test for {Database}: {Duration}ms (Status: {Status})",
+                        databaseName, stopwatch.ElapsedMilliseconds, response.StatusCode);
+                        
+                    if (stopwatch.ElapsedMilliseconds > 5000) // > 5 secondi
+                    {
+                        _logger.LogWarning("SLOW SERVICE RESPONSE: {Duration}ms - network latency issue detected", 
+                            stopwatch.ElapsedMilliseconds);
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    stopwatch.Stop();
+                    _logger.LogError("SERVICE TIMEOUT: No response after 30 seconds - network connectivity issue");
+                }
+                catch (HttpRequestException ex)
+                {
+                    stopwatch.Stop();
+                    _logger.LogError("SERVICE CONNECTION FAILED: {Error}", ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Service connectivity test failed: {Error}", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Verifica l'uso della memoria del processo
+        /// </summary>
+        private async Task CheckMemoryUsage()
+        {
+            try
+            {
+                var process = System.Diagnostics.Process.GetCurrentProcess();
+                var workingSetMB = process.WorkingSet64 / 1024 / 1024;
+                var privateMemoryMB = process.PrivateMemorySize64 / 1024 / 1024;
+                
+                _logger.LogInformation("Memory Usage - Working Set: {WorkingSet}MB, Private: {Private}MB",
+                    workingSetMB, privateMemoryMB);
+                    
+                if (workingSetMB > 1000) // > 1GB
+                {
+                    _logger.LogWarning("HIGH MEMORY USAGE: {Memory}MB working set - potential memory pressure", workingSetMB);
+                }
+                
+                // Force async per consistenza con altri metodi
+                await Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Memory usage check failed: {Error}", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Verifica la pressure del Garbage Collector
+        /// </summary>
+        private async Task CheckGarbageCollectionPressure()
+        {
+            try
+            {
+                var gen0 = GC.CollectionCount(0);
+                var gen1 = GC.CollectionCount(1);
+                var gen2 = GC.CollectionCount(2);
+                var totalMemory = GC.GetTotalMemory(false) / 1024 / 1024; // MB
+                
+                _logger.LogInformation("GC Stats - Gen0: {Gen0}, Gen1: {Gen1}, Gen2: {Gen2}, Total Memory: {Memory}MB",
+                    gen0, gen1, gen2, totalMemory);
+                    
+                if (gen2 > 10) // Molte collezioni Gen2 indicano pressure
+                {
+                    _logger.LogWarning("HIGH GC PRESSURE: {Gen2} Gen2 collections - memory pressure detected", gen2);
+                }
+                
+                if (totalMemory > 500) // > 500MB
+                {
+                    _logger.LogWarning("HIGH MANAGED MEMORY: {Memory}MB - potential memory leak", totalMemory);
+                }
+                
+                await Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("GC pressure check failed: {Error}", ex.Message);
             }
         }
 
@@ -374,12 +513,34 @@ namespace SyncClient.Sync
             _logger.LogInformation("Conflicts:                {Conflicts}", summary.TotalResolvedConflicts);
             _logger.LogInformation("Duration:                 {Duration:F2}s", duration);
 
+            // AGGIUNGI: Informazioni dettagliate per sync molto lente
+            if (duration > 300 && databaseName == "Primary Database")
+            {
+                var changesPerSecond = (summary.TotalChangesAppliedOnClient + summary.TotalChangesAppliedOnServer) / duration;
+                _logger.LogWarning("PERFORMANCE ANALYSIS: {Changes} total changes in {Duration:F2}s = {Rate:F2} changes/sec", 
+                    summary.TotalChangesAppliedOnClient + summary.TotalChangesAppliedOnServer, duration, changesPerSecond);
+                
+                if (changesPerSecond < 0.1 && (summary.TotalChangesAppliedOnClient + summary.TotalChangesAppliedOnServer) > 0)
+                {
+                    _logger.LogError("EXTREMELY LOW THROUGHPUT: {Rate:F3} changes/sec - severe performance issue", changesPerSecond);
+                }
+                else if ((summary.TotalChangesAppliedOnClient + summary.TotalChangesAppliedOnServer) == 0)
+                {
+                    _logger.LogError("NO DATA TRANSFER but SLOW SYNC: {Duration:F2}s for 0 changes - network/service issue likely", duration);
+                }
+            }
+
             // Additional logging 
             _logger.LogInformation("......................................");
             _logger.LogInformation("Additional info:");
 
             // Monitoring sync duration con soglie più specifiche
-            if (duration > 300) // > 5 minuti
+            if (duration > 600) // > 10 minuti
+            {
+                _logger.LogError("EXTREME Slow Sync detected for {Database}: {Duration:F2}s (Cycle #{Cycle}) - CRITICAL NETWORK/SERVICE ISSUE",
+                    databaseName, duration, _syncCicleCount);
+            }
+            else if (duration > 300) // > 5 minuti
             {
                 _logger.LogError("CRITICAL Slow Sync detected for {Database}: {Duration:F2}s (Cycle #{Cycle}) - IMMEDIATE ATTENTION REQUIRED",
                     databaseName, duration, _syncCicleCount);

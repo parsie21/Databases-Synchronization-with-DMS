@@ -2,6 +2,7 @@
 using Dotmim.Sync.SqlServer;
 using Microsoft.Extensions.DependencyInjection;
 using SyncServer.Configurations;
+using System.Threading.Tasks;
 
 namespace SyncServer
 {
@@ -39,7 +40,7 @@ namespace SyncServer
         public void ConfigureServices(IServiceCollection services)
         {
             // TODO: Refactoring - Questo codice ha troppa duplicazione e troppe responsabilità
-            // Idealmente, dovrebbe essere spostato in una classe dedicata come SyncConfigurationService
+            // Idealmente, dovrebbe essere spostato in una classe dedicata del tipo SyncConfigurationService
             // che gestisca la configurazione, validazione e il setup dei provider di sincronizzazione.
             #region Add distributed memory cache and session management
             services.AddDistributedMemoryCache();
@@ -56,6 +57,7 @@ namespace SyncServer
             #endregion
 
             #region Perform validation checks
+            
             ValidateConfiguration(syncConfig);
             #endregion
 
@@ -76,6 +78,7 @@ namespace SyncServer
 
             #region Configure synchronization for the primary database
             var tablesDb1 = syncConfig.DatabaseTables["PrimaryDatabase"];
+            var setupDb1 = new SyncSetup(tablesDb1);
             var optionsDb1 = new SyncOptions
             {
                 BatchSize = syncConfig.SyncOptions.BatchSize,
@@ -85,11 +88,18 @@ namespace SyncServer
                     : Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ClientWins
             };
             var providerDb1 = new SqlSyncChangeTrackingProvider(connectionStringDb1);
-            services.AddSyncServer(providerDb1, new SyncSetup(tablesDb1), optionsDb1, null, "PrimaryDatabaseScope");
+            var orchestratorDb1 = new RemoteOrchestrator(providerDb1);
+            var flagsDb1 = Dotmim.Sync.Enumerations.SyncProvision.ScopeInfo | Dotmim.Sync.Enumerations.SyncProvision.Triggers | Dotmim.Sync.Enumerations.SyncProvision.ScopeInfoClient;
+            orchestratorDb1.DeprovisionAsync(flagsDb1);
+            orchestratorDb1.ProvisionAsync(setupDb1, Dotmim.Sync.Enumerations.SyncProvision.NotSet );
+            var scopeDb1 = "PrimaryDatabaseScope";
+            services.AddSyncServer(providerDb1, setupDb1, optionsDb1, null, scopeDb1);
+            logger.LogInformation("Added syncServer for db1");
             #endregion
             
             #region Configure synchronization for the secondary database
             var tablesDb2 = syncConfig.DatabaseTables["SecondaryDatabase"];
+            var setupDb2 = new SyncSetup(tablesDb2);
             var optionsDb2 = new SyncOptions
             {
                 BatchSize = syncConfig.SyncOptions.BatchSize,
@@ -99,9 +109,15 @@ namespace SyncServer
                     : Dotmim.Sync.Enumerations.ConflictResolutionPolicy.ClientWins
             };
             var providerDb2 = new SqlSyncChangeTrackingProvider(connectionStringDb2);
-            services.AddSyncServer(providerDb2, new SyncSetup(tablesDb2), optionsDb2, null, "SecondaryDatabaseScope");
+            var orchestratorDb2 = new RemoteOrchestrator(providerDb2);
+            var flagsDb2 = Dotmim.Sync.Enumerations.SyncProvision.ScopeInfo | Dotmim.Sync.Enumerations.SyncProvision.Triggers | Dotmim.Sync.Enumerations.SyncProvision.ScopeInfoClient;
+            orchestratorDb2.DeprovisionAsync(flagsDb2);
+            orchestratorDb2.ProvisionAsync(setupDb2, Dotmim.Sync.Enumerations.SyncProvision.NotSet );
+            var scopeDb2 = "SecondaryDatabaseScope";
+            services.AddSyncServer(providerDb2, setupDb2, optionsDb2, null, scopeDb2);
+            logger.LogInformation("Added syncServer for db2");
             #endregion
-            
+
 
         }
 

@@ -172,6 +172,20 @@ namespace SyncClient.Sync
                 var remoteOrchestrator = new WebRemoteOrchestrator(serviceUrl);
                 remoteOrchestrator.HttpClient.Timeout = TimeSpan.FromMinutes(20);
                 var agent = new SyncAgent(localProvider, remoteOrchestrator);
+                agent.LocalOrchestrator.OnConflictingSetup(async args =>
+                {
+                    if (args.ServerScopeInfo != null)
+                    {
+                        // applica localmente lo scope del server, sovrascivendo la definizione attuale 
+                        args.ClientScopeInfo = await agent.LocalOrchestrator.ProvisionAsync(args.ServerScopeInfo, overwrite: true);
+                        // consenti alla sync di proseguire 
+                        args.Action = ConflictingSetupAction.Continue;
+                        return;
+
+                    }
+                    args.Action = ConflictingSetupAction.Abort; 
+                });
+
 
                 // Determina lo scope corretto in base al database
                 string scopeName = databaseName == "Primary Database" ? "PrimaryDatabaseScope" : "SecondaryDatabaseScope";

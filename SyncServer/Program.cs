@@ -1,56 +1,84 @@
 using Dotmim.Sync;
 using Dotmim.Sync.SqlServer;
-using Dotmim.Sync.SqlServer.ChangeTracking;
 using Dotmim.Sync.Web.Server;
-using SyncServer;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using SyncServer.Configurations;
+using SyncServer.Services;
 
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Configurazione logging (mantenendo le tue preferenze)
+builder.Logging.ClearProviders();
+builder.Logging.AddSimpleConsole(options =>
 {
+    options.IncludeScopes = false;
+    options.SingleLine = true;
+    options.TimestampFormat = "HH:mm:ss ";
+});
 
+// Bind configuration
+builder.Services.Configure<SyncConfiguration>(builder.Configuration.GetSection("SyncConfiguration"));
 
-    /// <summary>
-    /// Punto di ingresso dell'applicazione. Avvia il web server ASP.NET Core usando la classe Startup.
-    /// </summary>
-    /// <param name="args">Argomenti della riga di comando.</param>
-    public static void Main(string[] args)
-    {
-        CreateHostBuilder(args).Build().Run();
-    }
+// Registra servizi base
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+builder.Services.AddControllers();
 
-    /// <summary>
-    /// Crea e configura l'host web ASP.NET Core, specificando la classe Startup.
-    /// </summary>
-    /// <param name="args">Argomenti della riga di comando.</param>
-    /// <returns>IHostBuilder configurato.</returns>
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-        .ConfigureLogging(logging =>
-        {
-            logging.ClearProviders();
-            logging.AddSimpleConsole(options =>
-            {
-                options.IncludeScopes = false;
-                options.SingleLine = true;
-                options.TimestampFormat = "HH:mm:SS ";
-            });
-        })
-        .ConfigureWebHostDefaults(webBuilder =>
-        {
-            webBuilder.UseStartup<SyncServer.Startup>();
-            
-            // Controlla l'ambiente
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
-            var aspnetCoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
-            
-            // Usa URL hardcoded solo se NON siamo in Development O se non è impostata ASPNETCORE_URLS
-            if (environment != "Development" || string.IsNullOrEmpty(aspnetCoreUrls))
-            {
-                webBuilder.UseUrls("http://localhost:5202"); // URL di riferimento dell'API
-            }
-            // Se siamo in Development e ASPNETCORE_URLS è impostata (Docker), usa quella
-        });
+// Registra il servizio di configurazione sync
+builder.Services.AddSingleton<ISyncConfigurationService, SyncConfigurationService>();
+
+// ===== REGISTRAZIONE SERVIZI SYNC PRIMA DI BUILD() =====
+// Crea temporaneamente un service provider per ottenere la configurazione
+using (var tempServiceProvider = builder.Services.BuildServiceProvider())
+{
+    var syncConfigService = tempServiceProvider.GetRequiredService<ISyncConfigurationService>();
+    var logger = tempServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    logger.LogInformation("Registrazione servizi sync...");
+    syncConfigService.RegisterSyncServices(builder.Services);
+    logger.LogInformation("Servizi sync registrati con successo");
 }
+
+// Costruisci l'app DOPO aver registrato tutti i servizi
+var app = builder.Build();
+
+// ===== PROVISIONING ASINCRONO PRIMA DELL'AVVIO =====
+using (var scope = app.Services.CreateScope())
+{
+    var syncConfigService = scope.ServiceProvider.GetRequiredService<ISyncConfigurationService>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    try
+    {
+        logger.LogInformation("Avvio provisioning databases...");
+        await syncConfigService.ProvisionAllDatabasesAsync();
+        logger.LogInformation("Provisioning completato con successo");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Provisioning fallito: {Message}", ex.Message);
+        throw;
+    }
+}
+
+// ===== CONFIGURAZIONE PIPELINE =====
+if (app.Environment.IsDevelopment())
+    app.UseDeveloperExceptionPage();
+
+app.UseSession();
+app.UseRouting();
+app.MapControllers();
+
+// ===== CONFIGURAZIONE URL (mantenendo la tua logica) =====
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+var aspnetCoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+
+if (environment != "Development" || string.IsNullOrEmpty(aspnetCoreUrls))
+{
+    app.Urls.Add("http://localhost:5202");
+}
+
+// Log finale
+var finalLogger = app.Services.GetRequiredService<ILogger<Program>>();
+finalLogger.LogInformation("Applicazione avviata correttamente su ambiente: {Environment}", environment);
+
+app.Run();

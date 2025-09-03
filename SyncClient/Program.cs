@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Dotmim.Sync.SqlServer;
+using Dotmim.Sync.Web.Client;
+using Microsoft.Extensions.Logging;
 using SyncClient.Console.Configuration;
 using SyncClient.Sync;
 using System;
@@ -146,6 +148,7 @@ namespace SyncClient
                 syncLogger.LogInformation("Applying startup delay of {Delay}ms to avoid concurrent startup issues...", startupDelay);
                 await Task.Delay(startupDelay);
 
+                
                 // Crea un'istanza di SyncRunner con i dati configurati
                 var syncRunner = new SyncRunner(
                     primaryDbConn,
@@ -160,6 +163,8 @@ namespace SyncClient
                 syncLogger.LogInformation("Starting synchronization process...");
                 await syncRunner.RunAsync();
                 #endregion
+
+
             }
             #region Global Error Handling
             catch (Exception ex)

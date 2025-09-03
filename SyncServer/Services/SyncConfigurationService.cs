@@ -3,6 +3,7 @@ using Dotmim.Sync.SqlServer;
 using Dotmim.Sync.Web.Server;
 using Microsoft.Extensions.Options;
 using SyncServer.Configurations;
+using Microsoft.Data.SqlClient;  
 
 namespace SyncServer.Services;
 

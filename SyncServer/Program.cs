@@ -6,7 +6,7 @@ using SyncServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurazione logging (mantenendo le tue preferenze)
+// Configurazione logging
 builder.Logging.ClearProviders();
 builder.Logging.AddSimpleConsole(options =>
 {
@@ -26,8 +26,7 @@ builder.Services.AddControllers();
 // Registra il servizio di configurazione sync
 builder.Services.AddSingleton<ISyncConfigurationService, SyncConfigurationService>();
 
-// ===== REGISTRAZIONE SERVIZI SYNC PRIMA DI BUILD() =====
-// Crea temporaneamente un service provider per ottenere la configurazione
+// ===== REGISTRAZIONE SERVIZI SYNC =====
 using (var tempServiceProvider = builder.Services.BuildServiceProvider())
 {
     var syncConfigService = tempServiceProvider.GetRequiredService<ISyncConfigurationService>();
@@ -38,10 +37,9 @@ using (var tempServiceProvider = builder.Services.BuildServiceProvider())
     logger.LogInformation("Servizi sync registrati con successo");
 }
 
-// Costruisci l'app DOPO aver registrato tutti i servizi
 var app = builder.Build();
 
-// ===== PROVISIONING ASINCRONO PRIMA DELL'AVVIO =====
+// ===== PROVISIONING ASINCRONO =====
 using (var scope = app.Services.CreateScope())
 {
     var syncConfigService = scope.ServiceProvider.GetRequiredService<ISyncConfigurationService>();
@@ -68,7 +66,7 @@ app.UseSession();
 app.UseRouting();
 app.MapControllers();
 
-// ===== CONFIGURAZIONE URL (mantenendo la tua logica) =====
+// ===== CONFIGURAZIONE URL =====
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 var aspnetCoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
 

@@ -137,9 +137,52 @@ When configuring connection strings, it is absolutely essential that both the se
 \
 
 # Installation & Setup
+
 ## Prerequisites
+- .NET 8 SDK installed on the host (for local runs)
+- Docker + Docker Compose (for containerized environment)
+- SQL Server 2022 instances (central + clients)
+- Database backups (.bak)
 ## Database Preparation
+1) Both the SyncServer and SyncClient rely on Dotmim.Sync’s SqlSyncChangeTrackingProvider, which requires SQL Server Change Tracking to be enabled.
+If not enabled, synchronization will fail immediately.
+
+Run the following command on each database to enable Change Tracking at the database level:
+```SQL
+ALTER DATABASE [Nome database]
+SET CHANGE_TRACKING = ON (CHANGE_RETENTION = 7 DAYS, AUTO_CLEANUP = ON);
+```
+You can also abilitate the change tracking feature only on the specific tables you wish to synchronize. You can do so with the following query template
+```SQL
+ALTER TABLE dbo.cfg_Aziende ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);
+ALTER TABLE dbo.cfg_Utenti ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);
+ALTER TABLE dbo.ana_CampiLiberiFornitori ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);
+ALTER TABLE dbo.ana_Clienti ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);
+```
+
+2) If not already done, restore the .bak files onto the server and client SQL Server instances.\
+**Recommended**: restore the databases on all instances before running sync (faster, avoids huge initial transfers).\
+**Alternative**: restore only on the server. In this case, the SyncServer will provision and push the schema + data to the clients on the first synchronization.
+This option can be extremely slow for large databases and may lead to timeouts. 
+
+3) Start the services.
+    - Start the SyncServer first.
+    - Then start one or more SyncClients.
+    - You may start them simultaneously, but sequential startup is cleaner and avoids transient errors.
+
+After startup, verify that the server is healthy: 
+```bash 
+curl http://localhost:5202/api/health
+```
+or browse to http://localhost:5202/api/info to confirm the server is up and running. You'll see some other information about the system. 
+
 ## Initial Synchronization
+The **first synchronization** is critical:
+- If the clients have already restored the databases, then the sync will only reconcile the deltas 
+- if the clients have not restored the databases, then the server has to send a full provision, which may take a long time depending on the database size. 
+- Both the clients and the server will make a deprovision of the DMS tables and a new provision at the start of the application, which will re-create the tables based on the setup we give. This was made to make sure that, if any change was made to the setup in the 
+
+
 ## Verification Steps
 
 \

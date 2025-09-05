@@ -241,44 +241,47 @@ namespace SyncClient.Sync
         {
             try
             {
-                if (databaseName == "Primary Database")
+                // Ottieni la durata dell'ultima sincronizzazione per questo database
+                double lastDuration = databaseName == "Primary Database" ? _lastPrimaryDuration : 0;
+                
+                // Se non ci sono problemi di performance, salta la diagnostica
+                if (lastDuration <= 30 && _syncCicleCount > 1) // <= 30 secondi e non primo ciclo
                 {
-                    // Logica escalation della diagnostica basata su performance e cicli
-                    if (_lastPrimaryDuration > 300) // > 5 minuti
+                    _logger.LogDebug("Skipping diagnostics for {DatabaseName} - no issues detected (last duration: {Duration:F2}s)", 
+                        databaseName, lastDuration);
+                    return;
+                }
+
+                // Logica unificata di escalation per entrambi i database
+                if (lastDuration > 300) // > 5 minuti
+                {
+                    _logger.LogWarning("Previous sync took {Duration:F2}s for {DatabaseName} - performing critical diagnostics", 
+                        lastDuration, databaseName);
+                    await _databaseManager.PerformCriticalDiagnosticsAsync(clientConn, databaseName);
+                    
+                    // Diagnostica specifica per sync estremi
+                    if (lastDuration > 600) // > 10 minuti
                     {
-                        _logger.LogWarning("Previous sync took {Duration:F2}s - performing critical diagnostics", _lastPrimaryDuration);
-                        await _databaseManager.PerformCriticalDiagnosticsAsync(clientConn, databaseName);
-                        
-                        // AGGIUNGI: Diagnostica specifica per sync lenti senza problemi di DB
-                        if (_lastPrimaryDuration > 600) // > 10 minuti
-                        {
-                            _logger.LogError("EXTREMELY SLOW SYNC detected - investigating network/service issues");
-                            await InvestigateNetworkAndServiceIssues(databaseName);
-                        }
+                        _logger.LogError("EXTREMELY SLOW SYNC detected for {DatabaseName} - investigating network/service issues", 
+                            databaseName);
+                        await InvestigateNetworkAndServiceIssues(databaseName);
                     }
-                    else if (_lastPrimaryDuration > 60 || _syncCicleCount % 5 == 0) // > 1 minuto o ogni 5 cicli
-                    {
-                        _logger.LogInformation("Performing advanced diagnostics for performance monitoring");
-                        await _databaseManager.PerformAdvancedDiagnosticsAsync(clientConn, databaseName);
-                    }
-                    else if (_syncCicleCount == 1 || _syncCicleCount % 10 == 0) // Primo ciclo o ogni 10 cicli
-                    {
-                        _logger.LogInformation("Performing comprehensive diagnostics");
-                        await _databaseManager.PerformDatabaseDiagnosticsAsync(clientConn, databaseName);
-                    }
-                    else
-                    {
-                        // Controllo rapido per situazioni normali
-                        await _databaseManager.PerformQuickHealthCheckAsync(clientConn, databaseName);
-                    }
+                }
+                else if (lastDuration > 60 || _syncCicleCount % 5 == 0) // > 1 minuto o ogni 5 cicli
+                {
+                    _logger.LogInformation("Performing advanced diagnostics for {DatabaseName}", databaseName);
+                    await _databaseManager.PerformAdvancedDiagnosticsAsync(clientConn, databaseName);
+                }
+                else if (_syncCicleCount == 1 || _syncCicleCount % 10 == 0) // Primo ciclo o ogni 10 cicli
+                {
+                    _logger.LogInformation("Performing comprehensive diagnostics for {DatabaseName}", databaseName);
+                    await _databaseManager.PerformDatabaseDiagnosticsAsync(clientConn, databaseName);
                 }
                 else
                 {
-                    // Per il Secondary Database, solo controlli leggeri
-                    if (_syncCicleCount % 20 == 0) // Ogni 20 cicli
-                    {
-                        await _databaseManager.PerformQuickHealthCheckAsync(clientConn, databaseName);
-                    }
+                    // Controllo rapido per situazioni normali
+                    _logger.LogDebug("Performing quick health check for {DatabaseName}", databaseName);
+                    await _databaseManager.PerformQuickHealthCheckAsync(clientConn, databaseName);
                 }
             }
             catch (Exception ex)

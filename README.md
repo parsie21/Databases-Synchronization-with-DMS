@@ -253,19 +253,10 @@ The <strong>first synchronization</strong> is critical:
 
 ### Basic Synchronization
 
-Describe how to perform a basic sync operation between server and client.
+There is not much you need to do other than start the server and then start the client. 
+Possibly, start first the server and when it says it is listening, start the clients.
 
-### Manual Sync Triggers
 
-Explain how to manually trigger synchronization from the client or server.
-
-### Monitoring Sync Status
-
-Show how to monitor the status of ongoing or past sync operations.
-
-### Common Workflows
-
-Outline typical usage scenarios and recommended practices.
 </details>
 
 
@@ -638,12 +629,12 @@ One critical issue encountered during testing was Docker Desktop becoming comple
    docker-compose -f docker-compose.sync_dual_db_test.yml up -d --build
    ```
     **Prevention tips:**
-    - Ensure sufficient system resources (minimum 8GB RAM, 4GB available for Docker)
+    - Ensure sufficient system resources
     - Avoid running multiple heavy containerized applications simultaneously
     - Regularly clean up unused containers and images with `docker system prune`
     - Monitor Docker Desktop logs for early warning signs of resource exhaustion
 
-5. If everything has failed uninstall and reinstall docker
+5. If everything has failed, restart the pc. If even that doesn't work out. Uninstall and reinstall docker, only god knows what happened.
 </details>
 
 </details>

@@ -72,8 +72,11 @@ var aspnetCoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
 
 if (environment != "Development" || string.IsNullOrEmpty(aspnetCoreUrls))
 {
-    app.Urls.Add("http://localhost:5202");
+    // app.Urls.Add("http://localhost:5202");
+    app.Urls.Add("http://0.0.0.0:5202"); 
 }
+
+
 
 // Log finale
 var finalLogger = app.Services.GetRequiredService<ILogger<Program>>();

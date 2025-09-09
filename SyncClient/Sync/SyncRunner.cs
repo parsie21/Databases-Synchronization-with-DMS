@@ -164,28 +164,33 @@ namespace SyncClient.Sync
         {
             try
             {
-                // === DIAGNOSTICA PRE-SINCRONIZZAZIONE ===
                 await PerformPreSyncDiagnostics(clientConn, databaseName);
 
-                // === SINCRONIZZAZIONE ===
                 var localProvider = new SqlSyncChangeTrackingProvider(clientConn);
                 var remoteOrchestrator = new WebRemoteOrchestrator(serviceUrl);
                 remoteOrchestrator.HttpClient.Timeout = TimeSpan.FromMinutes(20);
-                var agent = new SyncAgent(localProvider, remoteOrchestrator);
+                
+                // Opzioni sync con disabilitazione constraint automatica
+                var syncOptions = new SyncOptions
+                {
+                    DisableConstraintsOnApplyChanges = true,  // Dotmim.Sync gestisce automaticamente
+                    //BatchSize = 1000,
+                    //DbCommandTimeout = (int)TimeSpan.FromMinutes(10).TotalSeconds
+                };
+                
+                var agent = new SyncAgent(localProvider, remoteOrchestrator, syncOptions);
+
+                // Gestione conflitti
                 agent.LocalOrchestrator.OnConflictingSetup(async args =>
                 {
                     if (args.ServerScopeInfo != null)
                     {
-                        // applica localmente lo scope del server, sovrascivendo la definizione attuale 
                         args.ClientScopeInfo = await agent.LocalOrchestrator.ProvisionAsync(args.ServerScopeInfo, overwrite: true);
-                        // consenti alla sync di proseguire 
                         args.Action = ConflictingSetupAction.Continue;
                         return;
-
                     }
                     args.Action = ConflictingSetupAction.Abort; 
                 });
-
 
                 // Determina lo scope corretto in base al database
                 string scopeName = databaseName == "Primary Database" ? "PrimaryDatabaseScope" : "SecondaryDatabaseScope";

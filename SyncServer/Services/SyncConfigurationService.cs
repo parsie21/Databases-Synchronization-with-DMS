@@ -75,29 +75,12 @@ public class SyncConfigurationService : ISyncConfigurationService
             var provider = new SqlSyncChangeTrackingProvider(connectionString);
             var orchestrator = new RemoteOrchestrator(provider);
 
-            // Verifica se già provisionato usando GetScopeInfoAsync
-            ScopeInfo scopeInfo = null;
-            try
-            {
-                scopeInfo = await orchestrator.GetScopeInfoAsync(scopeName);
-            }
-            catch
-            {
-                // Se GetScopeInfoAsync lancia eccezione, significa che lo scope non esiste
-                scopeInfo = null;
-            }
-
-            if (scopeInfo != null)
-            {
-                _logger.LogInformation("{DatabaseName}: Scope {ScopeName} già provisionato", databaseName, scopeName);
-                
-                // Deprovision selettivo (solo stored procedures e scope info per il server)
-                var deprovFlags = Dotmim.Sync.Enumerations.SyncProvision.StoredProcedures | Dotmim.Sync.Enumerations.SyncProvision.ScopeInfo;
-                await orchestrator.DeprovisionAsync(deprovFlags);
-                _logger.LogInformation("{DatabaseName}: Deprovision completato per scope {ScopeName}", databaseName, scopeName);
-            }
-
-            // Provisioning completo
+            _logger.LogInformation("{DatabaseName}: Iniziando pulizia manuale completa...", databaseName);
+            
+            // PULIZIA MANUALE AGGRESSIVA - Rimuove tutte le strutture DMS incompatibili
+            await PerformManualCleanupAsync(connectionString, databaseName);
+            
+            // PROVISIONING COMPLETO con ambiente pulito
             await orchestrator.ProvisionAsync(setup, Dotmim.Sync.Enumerations.SyncProvision.NotSet, overwrite: true);
             _logger.LogInformation("{DatabaseName}: Provisioning completato per scope {ScopeName} con {TableCount} tabelle", 
                 databaseName, scopeName, tables.Length);
@@ -110,6 +93,262 @@ public class SyncConfigurationService : ISyncConfigurationService
         {
             _logger.LogError(ex, "Errore durante il provisioning di {DatabaseName} (scope: {ScopeName})", databaseName, scopeName);
             throw;
+        }
+    }
+
+    private async Task PerformManualCleanupAsync(string connectionString, string databaseName)
+    {
+        try
+        {
+            using var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            _logger.LogInformation("{DatabaseName}: Eseguendo pulizia aggressiva a chunks...", databaseName);
+
+            // STRATEGIA: Pulizia in chunks per evitare limite STRING_AGG
+            await PerformChunkedCleanupAsync(connection, databaseName);
+
+            _logger.LogInformation("{DatabaseName}: Pulizia aggressiva completata", databaseName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "{DatabaseName}: Errore durante pulizia aggressiva: {Error}", databaseName, ex.Message);
+            throw;
+        }
+    }
+
+    private async Task PerformChunkedCleanupAsync(SqlConnection connection, string databaseName)
+    {
+        // Step 1: Rimuovi TUTTE le stored procedures DMS in chunks
+        await RemoveStoredProceduresInChunksAsync(connection, databaseName);
+
+        // Step 2: Rimuovi TUTTI i tipi DMS in chunks
+        await RemoveTypesInChunksAsync(connection, databaseName);
+
+        // Step 3: Rimuovi triggers, tabelle tracking e scope
+        await RemoveRemainingObjectsAsync(connection, databaseName);
+    }
+
+    private async Task RemoveStoredProceduresInChunksAsync(SqlConnection connection, string databaseName)
+    {
+        try
+        {
+            _logger.LogInformation("{DatabaseName}: Rimozione stored procedures DMS in chunks...", databaseName);
+
+            var getProceduresQuery = @"
+                SELECT QUOTENAME(SCHEMA_NAME(schema_id)) + '.' + QUOTENAME(name) as FullName
+                FROM sys.procedures 
+                WHERE name LIKE '%_selectchanges%' 
+                   OR name LIKE '%_insertmetadata%' 
+                   OR name LIKE '%_updatemetadata%'
+                   OR name LIKE '%_deletemetadata%'
+                   OR name LIKE '%_reset%'
+                   OR name LIKE '%_bulkinsert%'
+                   OR name LIKE '%_bulkupdate%'
+                   OR name LIKE '%_bulkdelete%'
+                   OR name LIKE '%bulkinsert%'
+                   OR name LIKE '%bulkupdate%'
+                   OR name LIKE '%bulkdelete%'
+                ORDER BY name";
+
+            var procedures = new List<string>();
+            using var cmd = new SqlCommand(getProceduresQuery, connection);
+            using var reader = await cmd.ExecuteReaderAsync();
+            
+            while (await reader.ReadAsync())
+            {
+                procedures.Add(reader["FullName"].ToString());
+            }
+
+            _logger.LogInformation("{DatabaseName}: Trovate {Count} stored procedures DMS da rimuovere", databaseName, procedures.Count);
+
+            // Rimuovi in chunks di 10 per volta
+            const int chunkSize = 10;
+            for (int i = 0; i < procedures.Count; i += chunkSize)
+            {
+                var chunk = procedures.Skip(i).Take(chunkSize);
+                var dropSql = string.Join(";\n", chunk.Select(proc => $"DROP PROCEDURE {proc}"));
+                
+                if (!string.IsNullOrEmpty(dropSql))
+                {
+                    try
+                    {
+                        using var dropCmd = new SqlCommand(dropSql, connection);
+                        dropCmd.CommandTimeout = 60;
+                        await dropCmd.ExecuteNonQueryAsync();
+                        
+                        _logger.LogInformation("{DatabaseName}: Rimosso chunk {ChunkStart}-{ChunkEnd} di stored procedures", 
+                            databaseName, i + 1, Math.Min(i + chunkSize, procedures.Count));
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "{DatabaseName}: Errore rimozione chunk stored procedures: {Error}", databaseName, ex.Message);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "{DatabaseName}: Errore durante rimozione stored procedures: {Error}", databaseName, ex.Message);
+        }
+    }
+
+    private async Task RemoveTypesInChunksAsync(SqlConnection connection, string databaseName)
+    {
+        try
+        {
+            _logger.LogInformation("{DatabaseName}: Rimozione tipi DMS in chunks...", databaseName);
+
+            var getTypesQuery = @"
+                SELECT QUOTENAME(SCHEMA_NAME(schema_id)) + '.' + QUOTENAME(name) as FullName
+                FROM sys.table_types 
+                WHERE name LIKE '%_BulkType%' 
+                   OR name LIKE '%BulkTableType%'
+                   OR name LIKE '%_bulktype%'
+                   OR name LIKE '%BulkType%'
+                ORDER BY name";
+
+            var types = new List<string>();
+            using var cmd = new SqlCommand(getTypesQuery, connection);
+            using var reader = await cmd.ExecuteReaderAsync();
+            
+            while (await reader.ReadAsync())
+            {
+                types.Add(reader["FullName"].ToString());
+            }
+
+            _logger.LogInformation("{DatabaseName}: Trovati {Count} tipi DMS da rimuovere", databaseName, types.Count);
+
+            // Rimuovi i tipi uno per volta per gestire meglio le dipendenze
+            foreach (var type in types)
+            {
+                try
+                {
+                    var dropSql = $"DROP TYPE {type}";
+                    using var dropCmd = new SqlCommand(dropSql, connection);
+                    dropCmd.CommandTimeout = 30;
+                    await dropCmd.ExecuteNonQueryAsync();
+                    
+                    _logger.LogDebug("{DatabaseName}: Rimosso tipo {Type}", databaseName, type);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "{DatabaseName}: Errore rimozione tipo {Type}: {Error}", databaseName, type, ex.Message);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "{DatabaseName}: Errore durante rimozione tipi: {Error}", databaseName, ex.Message);
+        }
+    }
+
+    private async Task RemoveRemainingObjectsAsync(SqlConnection connection, string databaseName)
+    {
+        try
+        {
+            _logger.LogInformation("{DatabaseName}: Rimozione oggetti rimanenti...", databaseName);
+
+            var cleanupSteps = new[]
+            {
+                // Triggers
+                @"
+                DECLARE @sql NVARCHAR(MAX) = '';
+                DECLARE @triggers TABLE (DropSql NVARCHAR(MAX));
+                
+                INSERT INTO @triggers
+                SELECT 'DROP TRIGGER ' + QUOTENAME(SCHEMA_NAME(t.schema_id)) + '.' + QUOTENAME(tr.name) + ';'
+                FROM sys.triggers tr
+                JOIN sys.tables t ON tr.parent_id = t.object_id
+                WHERE tr.name LIKE '%_insert_trigger%' 
+                   OR tr.name LIKE '%_update_trigger%'
+                   OR tr.name LIKE '%_delete_trigger%'
+                   OR tr.name LIKE '%insert_trigger%'
+                   OR tr.name LIKE '%update_trigger%'
+                   OR tr.name LIKE '%delete_trigger%';
+
+                DECLARE trigger_cursor CURSOR FOR SELECT DropSql FROM @triggers;
+                DECLARE @triggerSql NVARCHAR(MAX);
+                
+                OPEN trigger_cursor;
+                FETCH NEXT FROM trigger_cursor INTO @triggerSql;
+                
+                WHILE @@FETCH_STATUS = 0
+                BEGIN
+                    BEGIN TRY
+                        EXEC sp_executesql @triggerSql;
+                    END TRY
+                    BEGIN CATCH
+                        -- Continua anche se un trigger fallisce
+                    END CATCH
+                    
+                    FETCH NEXT FROM trigger_cursor INTO @triggerSql;
+                END
+                
+                CLOSE trigger_cursor;
+                DEALLOCATE trigger_cursor;
+                ",
+                
+                // Tracking tables
+                @"
+                DECLARE @sql NVARCHAR(MAX) = '';
+                DECLARE @trackingTables TABLE (DropSql NVARCHAR(MAX));
+                
+                INSERT INTO @trackingTables
+                SELECT 'DROP TABLE ' + QUOTENAME(SCHEMA_NAME(schema_id)) + '.' + QUOTENAME(name) + ';'
+                FROM sys.tables 
+                WHERE name LIKE '%_tracking';
+
+                DECLARE table_cursor CURSOR FOR SELECT DropSql FROM @trackingTables;
+                DECLARE @tableSql NVARCHAR(MAX);
+                
+                OPEN table_cursor;
+                FETCH NEXT FROM table_cursor INTO @tableSql;
+                
+                WHILE @@FETCH_STATUS = 0
+                BEGIN
+                    BEGIN TRY
+                        EXEC sp_executesql @tableSql;
+                    END TRY
+                    BEGIN CATCH
+                        -- Continua anche se una tabella fallisce
+                    END CATCH
+                    
+                    FETCH NEXT FROM table_cursor INTO @tableSql;
+                END
+                
+                CLOSE table_cursor;
+                DEALLOCATE table_cursor;
+                ",
+                
+                // Scope tables
+                @"
+                IF OBJECT_ID('dbo.scope_info', 'U') IS NOT NULL DROP TABLE [dbo].[scope_info];
+                IF OBJECT_ID('dbo.scope_info_client', 'U') IS NOT NULL DROP TABLE [dbo].[scope_info_client];
+                "
+            };
+
+            foreach (var (step, index) in cleanupSteps.Select((s, i) => (s, i + 1)))
+            {
+                try
+                {
+                    _logger.LogInformation("{DatabaseName}: Eseguendo cleanup step {Step}/3", databaseName, index);
+                    
+                    using var command = new SqlCommand(step, connection);
+                    command.CommandTimeout = 120;
+                    await command.ExecuteNonQueryAsync();
+                    
+                    _logger.LogInformation("{DatabaseName}: Cleanup step {Step} completato", databaseName, index);
+                }
+                catch (Exception stepEx)
+                {
+                    _logger.LogWarning(stepEx, "{DatabaseName}: Errore cleanup step {Step}: {Error}", databaseName, index, stepEx.Message);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "{DatabaseName}: Errore durante cleanup oggetti rimanenti: {Error}", databaseName, ex.Message);
         }
     }
 

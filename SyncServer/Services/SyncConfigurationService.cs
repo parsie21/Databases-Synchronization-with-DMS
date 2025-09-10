@@ -56,7 +56,7 @@ public class SyncConfigurationService : ISyncConfigurationService
         var connectionStringDb2 = GetConnectionString("SecondaryDatabaseConnectionString", _config.SecondaryDatabaseConnectionString);
         var providerDb2 = new SqlSyncChangeTrackingProvider(connectionStringDb2);
         var setupDb2 = new SyncSetup(_config.DatabaseTables["SecondaryDatabase"]);
-        setupDb2.Tables.Add("[ven_Casssa]").Columns.AddRange(new string[] { "IDCassa",
+        setupDb2.Tables.Add("[ven_Cassa]").Columns.AddRange(new string[] { "IDCassa",
             "Numero punto",
             "Nome punto",
             "Data",
